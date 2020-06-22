@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "697386592680",
+    "firebase_url": "https://map-projet-222ea.firebaseio.com",
+    "project_id": "map-projet-222ea",
+    "storage_bucket": "map-projet-222ea.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:697386592680:android:bac1400bb87c11c966959d",
+        "android_client_info": {
+          "package_name": "com.edsbrains.app_flat"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "697386592680-h0kf1dpgt2206b7cglsa2oo22a4t5efb.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCApJbnN8E9-MQ035M6bh-QAE4V6unWWeY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "697386592680-h0kf1dpgt2206b7cglsa2oo22a4t5efb.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
