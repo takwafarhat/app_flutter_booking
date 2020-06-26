@@ -1,4 +1,42 @@
 class ApartmentModel {
+  final String description;
+  final String nom;
+  final String image;
+  final List avis;
+  final int etoile;
+  final int prix;
+  final List typedechambre;
+  final List features;
+  final List pictures;
+  final int nbCommentaires;
+  final String pays;
+  final String ville;
+  final String user;
+  final int telephone;
+  final String imageProp;
+  final String email;
+
+  ApartmentModel({
+    this.description,
+    this.nom,
+    this.image,
+    this.avis,
+    this.etoile,
+    this.prix,
+    this.typedechambre,
+    this.features,
+    this.pictures,
+    this.nbCommentaires,
+    this.pays,
+    this.ville,
+    this.user,
+    this.telephone,
+    this.imageProp,
+    this.email,
+  });
+}
+
+/*class ApartmentModel {
   final String name;
   final double price;
   final String sizeDesc;
@@ -74,4 +112,4 @@ class ApartmentModel {
       images: ["3.1", "3.2", "3.3"],
     )
   ];
-}
+}*/

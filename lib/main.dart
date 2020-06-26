@@ -8,7 +8,7 @@ class FlashChat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: LoginSignupPage.id,
+      initialRoute: HomePage.id,
       routes: {
         LoginSignupPage.id: (context) => LoginSignupPage(),
         HomePage.id: (context) => HomePage(),
