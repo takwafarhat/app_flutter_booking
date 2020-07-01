@@ -67,32 +67,7 @@ class _HomePageState extends State<HomePage> {
       drawer: new Drawer(
         child: ProfilePage(),
       ),
-      /*bottomNavigationBar: BottomNavigationBar(
-        currentIndex: _currentIndex,
-        showSelectedLabels: false,
-        showUnselectedLabels: false,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: AppColors.stylecolor,
-        unselectedItemColor: Colors.black38,
-        items: [
-          BottomNavigationBarItem(
-            icon: Icon(Icons.home),
-            title: Text("Home"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.filter_list),
-            title: Text("filter_list"),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.person),
-            title: Text("Profile"),
-          ),
-        ],
-        onTap: (index) {
-          _currentIndex = index;
-          setState(() {});
-        },
-      ),*/
+     
       body: _bodyHome(context),
     );
   }
@@ -142,14 +117,7 @@ class _HomePageState extends State<HomePage> {
       stream: DatabaseService().hotels,
       builder: (context, snapshot) {
         List<ApartmentModel> myHotels = snapshot.data;
-        //print('le nb etoile'+ myHotels[index].etoile.toString());
-
-//  final ref = FirebaseStorage.instance.ref().child(myHotels[index].nom);
-// // no need of the file extension, the name will do fine.
-
-//   String url = ( ref.getDownloadURL()).toString();
-//  print(url);
-//  print (myHotels[index].image);
+      
 
         return myHotels != null
             ? Container(

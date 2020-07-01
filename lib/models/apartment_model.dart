@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+
 class ApartmentModel {
   final String description;
   final String nom;
@@ -15,6 +18,9 @@ class ApartmentModel {
   final int telephone;
   final String imageProp;
   final String email;
+  final Timestamp hentree;
+  final Timestamp hsortie;
+  final List equipement;
 
   ApartmentModel({
     this.description,
@@ -33,6 +39,9 @@ class ApartmentModel {
     this.telephone,
     this.imageProp,
     this.email,
+    this.hentree,
+    this.hsortie,
+    this.equipement,
   });
 }
 

@@ -11,22 +11,26 @@ class DatabaseService {
       Firestore.instance.collection('hotels');
 
   Future<void> updateUserData(
-      String description,
-      String nom,
-      String image,
-      List<String> avis,
-      int etoile,
-      double prix,
-      List<String> typedechambre,
-      List<String> features,
-      List pictures,
-      int nbCommentaires,
-      String ville,
-      String pays,
-      int telephone,
-      String user,
-      String email,
-      String imageProp) async {
+    String description,
+    String nom,
+    String image,
+    List<String> avis,
+    int etoile,
+    double prix,
+    List<String> typedechambre,
+    List<String> features,
+    List pictures,
+    int nbCommentaires,
+    String ville,
+    String pays,
+    int telephone,
+    String user,
+    String email,
+    String imageProp,
+    Timestamp hentree,
+    Timestamp hsortie,
+    List<String> equipement,
+  ) async {
     return await hotelCollection.document(uid).setData({
       'Description': description,
       'Nom': nom,
@@ -44,6 +48,9 @@ class DatabaseService {
       'user': user,
       'email': email,
       'imageProp': imageProp,
+      'hentree': hentree,
+      'hsortie': hsortie,
+      'equipement': equipement,
     });
   }
 
@@ -67,6 +74,9 @@ class DatabaseService {
         user: doc.data['User'] ?? '',
         imageProp: doc.data['imageProp'] ?? '',
         telephone: doc.data['Telephone'] ?? 0,
+        hentree: doc.data['hentree'],
+        hsortie: doc.data['hsortie'],
+        equipement: doc.data['equipement'] ?? [],
       );
     }).toList();
   }
