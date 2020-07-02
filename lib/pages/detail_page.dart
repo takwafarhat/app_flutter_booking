@@ -1,4 +1,6 @@
 ﻿import 'package:app_flat/core/const.dart';
+import 'package:app_flat/models/chambre.dart';
+import 'package:app_flat/utils/database.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
@@ -18,13 +20,26 @@ class _DetailPageState extends State<DetailPage> {
   var _pageController = PageController();
   var _currentIndex = 0;
   var _maxLines = 3;
+  List<Chambre> myChambers = [];
+  @override
+  void initState() {
+    getChambers(widget.myHotel.id);
+
+    super.initState();
+  }
+
+  Future<void> getChambers(hid) async {
+    await DatabaseService().getChamberByHotelId(hid).then((value) {
+      value.forEach((element) {
+        myChambers.add(element);
+      });
+      setState(() {});
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    print("= pictures =  " + widget.myHotel.pictures.toString());
-    print("= equip =  " + widget.myHotel.equipement.toString());
-    print(" nb equip =  " + widget.myHotel.equipement.length.toString());
-    print("les avis sont " + widget.myHotel.avis.toString());
+    print('rebuilt UI');
     _pageController.addListener(() {
       setState(() {
         _currentIndex = _pageController.page.round();
@@ -63,9 +78,9 @@ class _DetailPageState extends State<DetailPage> {
                 mainAxisSize: MainAxisSize.max,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Center(
-                    child: Icon(Icons.drag_handle, color: Colors.black38),
-                  ),
+                  /*Center(
+                       child: Icon(Icons.drag_handle, color: Colors.black38),
+                     ),*/
                   Padding(
                     padding: EdgeInsets.only(top: 20, left: 20),
                     child: Text(
@@ -216,52 +231,6 @@ class _DetailPageState extends State<DetailPage> {
                           ],
                         ),
                       ),
-                      /*DefaultTabController(
-                        length: 4, // Added
-                        initialIndex: 0,
-                        child: Scaffold(
-                          appBar: AppBar(
-                            automaticallyImplyLeading: false,
-                            backgroundColor: Colors.white,
-                            flexibleSpace: SafeArea(
-                              child: TabBar(
-                                  indicator: UnderlineTabIndicator(
-                                    borderSide: BorderSide(
-                                        color: Colors.teal, width: 4.0),
-                                    insets: EdgeInsets.fromLTRB(
-                                        20.0, 0.0, 20.0, 40.0),
-                                  ),
-                                  labelColor: Colors.teal,
-                                  indicatorColor: Colors.teal,
-                                  unselectedLabelColor: Color(0xFFa4a1a1),
-                                  indicatorSize: TabBarIndicatorSize.label,
-                                  labelStyle: TextStyle(
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                                  tabs: [
-                                    Tab(
-                                      text: ('Details'),
-                                    ),
-                                    Tab(
-                                      text: 'Avis',
-                                    ),
-                                    Tab(
-                                      text: 'Chambres',
-                                    ),
-                                    Tab(
-                                      text: 'Map',
-                                    ),
-                                  ]),
-                            ),
-                          ),
-                          body: TabBarView(children: [
-                            _buildDetails(),
-                            _buildAvis(),
-                            _buildChambre(),
-                            _buildMap()
-                          ]),
-                        ),
-                      ),*/
                     ),
                   ),
                   Align(
@@ -499,18 +468,15 @@ class _DetailPageState extends State<DetailPage> {
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 20),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.teal[100], width: 2),
-                      ),
-                      padding: EdgeInsets.all(5),
-                      child: CircleAvatar(
-                        backgroundImage: NetworkImage(widget.myHotel.imageProp),
-                        maxRadius: 40,
-                      ),
+                  Container(
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      border: Border.all(color: Colors.teal[100], width: 2),
+                    ),
+                    padding: EdgeInsets.all(5),
+                    child: CircleAvatar(
+                      backgroundImage: NetworkImage(widget.myHotel.imageProp),
+                      maxRadius: 40,
                     ),
                   ),
                 ],
@@ -687,16 +653,151 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildChambre() {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      color: Colors.blueAccent,
-      child: Center(
-        child: Text(
-          'Hi from Hospital',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    return myChambers.length != 0
+        ? ListView.builder(
+            physics: BouncingScrollPhysics(),
+            itemCount: myChambers.length,
+            itemBuilder: (context, index) {
+              return Align(
+                alignment: Alignment.centerRight,
+                child: Container(
+                  width: MediaQuery.of(context).size.width,
+                  alignment: Alignment.topLeft,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                      color: Colors.white),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Flexible(
+                            child: Card(
+                              elevation: 3,
+                              child: Column(
+                                children: <Widget>[
+                                  Row(
+                                    children: <Widget>[
+                                      Container(
+                                        width: 60.0,
+                                        height: 90.0,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(4)),
+                                            image: DecorationImage(
+                                                image: NetworkImage(
+                                                    myChambers[index].photo),
+                                                fit: BoxFit.cover)),
+                                      ),
+                                      SizedBox(width: 4.0),
+                                      Column(
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+                                          Container(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: <Widget>[
+                                                Text(
+                                                  myChambers[index].type,
+                                                  style: TextStyle(
+                                                      fontFamily: 'Quicksand',
+                                                      fontSize: 15.0,
+                                                      color: Colors.black87,
+                                                      fontWeight:
+                                                          FontWeight.bold),
+                                                ),
+                                                SizedBox(height: 5.0),
+                                                Text(
+                                                  myChambers[index].nomHotel,
+                                                  textAlign: TextAlign.left,
+                                                  style: TextStyle(
+                                                      fontFamily: 'Quicksand',
+                                                      color: Colors.grey,
+                                                      fontSize: 12.0),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Container(
+                                                height: 50.0,
+                                                width: 50.0,
+                                                child: Center(
+                                                  child: Row(
+                                                    children: <Widget>[
+                                                      Text(
+                                                        myChambers[index]
+                                                            .prix
+                                                            .toString(),
+                                                        style: TextStyle(
+                                                            color:
+                                                                Colors.black87,
+                                                            fontFamily:
+                                                                'Quicksand',
+                                                            fontWeight:
+                                                                FontWeight
+                                                                    .bold),
+                                                      ),
+                                                      Text(
+                                                        " /nuits",
+                                                        style: TextStyle(
+                                                            color: Colors.black,
+                                                            fontSize: 10),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              SizedBox(width: 35.0),
+                                              Container(
+                                                child: FlatButton(
+                                                  color: Colors.teal,
+                                                  onPressed: () {},
+                                                  textColor: Colors.white,
+                                                  child: Text(
+                                                    'Reserver',
+                                                    style: TextStyle(
+                                                        fontFamily: 'Quicksand',
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold),
+                                                  ),
+                                                  shape: RoundedRectangleBorder(
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                              30.0)),
+                                                ),
+                                              )
+                                            ],
+                                          )
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              );
+            })
+        : Container();
   }
 
   Widget _buildMap() {

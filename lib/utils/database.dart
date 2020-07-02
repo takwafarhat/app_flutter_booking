@@ -1,58 +1,60 @@
+import 'package:app_flat/models/chambre.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/apartment_model.dart';
 
 class DatabaseService {
-  final String uid;
-  DatabaseService({this.uid});
+  // final String uid;
+  // DatabaseService({this.uid});
 
   // collection reference
   final CollectionReference hotelCollection =
       Firestore.instance.collection('hotels');
 
-  Future<void> updateUserData(
-    String description,
-    String nom,
-    String image,
-    List<String> avis,
-    int etoile,
-    double prix,
-    List<String> typedechambre,
-    List<String> features,
-    List pictures,
-    int nbCommentaires,
-    String ville,
-    String pays,
-    int telephone,
-    String user,
-    String email,
-    String imageProp,
-    Timestamp hentree,
-    Timestamp hsortie,
-    List<String> equipement,
-  ) async {
-    return await hotelCollection.document(uid).setData({
-      'Description': description,
-      'Nom': nom,
-      'Image': image,
-      'avis': avis,
-      'etoile': etoile,
-      'prix': prix,
-      'typedechambre': typedechambre,
-      'features': features,
-      'pictures': pictures,
-      'nbCommentaires': nbCommentaires,
-      'ville': ville,
-      'pays': pays,
-      'telephone': telephone,
-      'user': user,
-      'email': email,
-      'imageProp': imageProp,
-      'hentree': hentree,
-      'hsortie': hsortie,
-      'equipement': equipement,
-    });
-  }
+  // Future<void> updateUserData(
+  //   String description,
+  //   String nom,
+  //   String image,
+  //   List<String> avis,
+  //   int etoile,
+  //   double prix,
+  //   List<String> typedechambre,
+  //   List<String> features,
+  //   List pictures,
+  //   int nbCommentaires,
+  //   String ville,
+  //   String pays,
+  //   int telephone,
+  //   String user,
+  //   String email,
+  //   String imageProp,
+  //   Timestamp hentree,
+  //   Timestamp hsortie,
+  //   List<String> equipement,
+  //   String id,
+  // ) async {
+  //   return await hotelCollection.document().setData({
+  //     'Description': description,
+  //     'Nom': nom,
+  //     'Image': image,
+  //     'avis': avis,
+  //     'etoile': etoile,
+  //     'prix': prix,
+  //     'typedechambre': typedechambre,
+  //     'features': features,
+  //     'pictures': pictures,
+  //     'nbCommentaires': nbCommentaires,
+  //     'ville': ville,
+  //     'pays': pays,
+  //     'telephone': telephone,
+  //     'user': user,
+  //     'email': email,
+  //     'imageProp': imageProp,
+  //     'hentree': hentree,
+  //     'hsortie': hsortie,
+  //     'equipement': equipement,
+  //   });
+  // }
 
   List<ApartmentModel> _hotelListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
@@ -77,11 +79,56 @@ class DatabaseService {
         hentree: doc.data['hentree'],
         hsortie: doc.data['hsortie'],
         equipement: doc.data['equipement'] ?? [],
+        id: doc.documentID,
       );
     }).toList();
   }
 
   Stream<List<ApartmentModel>> get hotels {
     return hotelCollection.snapshots().map(_hotelListFromSnapshot);
+  }
+
+  final CollectionReference chambreCollection =
+      Firestore.instance.collection('chambres');
+
+  // Future<void> updatechambreData(
+  //   String nomHotel,
+  //   String photo,
+  //   int prix,
+  //   String type,
+  // ) async {
+  //   return await chambreCollection.document().setData({
+  //     'nomHotel': nomHotel,
+  //     'photo': photo,
+  //     'prix': prix,
+  //     'type': type,
+  //   });
+  // }
+
+  List<Chambre> chambreListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      Chambre(
+        nomHotel: doc.data['nomHotel'] ?? '',
+        photo: doc.data['photo'] ?? '',
+        prix: doc.data['prix'] ?? 0,
+        type: doc.data['type'] ?? [],
+      );
+    }).toList();
+  }
+
+  Stream<List<Chambre>> get chambres {
+    return chambreCollection.snapshots().map(chambreListFromSnapshot);
+  }
+
+  Future<List<Chambre>> getChamberByHotelId(String idhotel) async {
+    var postDocuments = await chambreCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      List<Chambre> list = postDocuments.documents
+          .map(
+              (snapshot) => Chambre.fromMap(snapshot.data, snapshot.documentID))
+          .where((mappedItem) => mappedItem.idhotel == idhotel)
+          .toList();
+          return list;
+    } else return [];
   }
 }

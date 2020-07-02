@@ -67,7 +67,6 @@ class _HomePageState extends State<HomePage> {
       drawer: new Drawer(
         child: ProfilePage(),
       ),
-     
       body: _bodyHome(context),
     );
   }
@@ -78,10 +77,6 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Text(
-            "55 result in your area",
-            style: TextStyle(color: Colors.black38),
-          ),
           Expanded(
             child: StreamBuilder(
               stream: DatabaseService().hotels,
@@ -117,7 +112,6 @@ class _HomePageState extends State<HomePage> {
       stream: DatabaseService().hotels,
       builder: (context, snapshot) {
         List<ApartmentModel> myHotels = snapshot.data;
-      
 
         return myHotels != null
             ? Container(

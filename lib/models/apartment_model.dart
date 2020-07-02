@@ -21,8 +21,9 @@ class ApartmentModel {
   final Timestamp hentree;
   final Timestamp hsortie;
   final List equipement;
+  final String id;
 
-  ApartmentModel({
+  ApartmentModel({this.id, 
     this.description,
     this.nom,
     this.image,
