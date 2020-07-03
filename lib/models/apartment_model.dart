@@ -1,6 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 
-
 class ApartmentModel {
   final String description;
   final String nom;
@@ -8,10 +7,8 @@ class ApartmentModel {
   final List avis;
   final int etoile;
   final int prix;
-  final List typedechambre;
   final List features;
   final List pictures;
-  final int nbCommentaires;
   final String pays;
   final String ville;
   final String user;
@@ -22,18 +19,18 @@ class ApartmentModel {
   final Timestamp hsortie;
   final List equipement;
   final String id;
+  String Adresse;
 
-  ApartmentModel({this.id, 
+  ApartmentModel({
+    this.id,
     this.description,
     this.nom,
     this.image,
     this.avis,
     this.etoile,
     this.prix,
-    this.typedechambre,
     this.features,
     this.pictures,
-    this.nbCommentaires,
     this.pays,
     this.ville,
     this.user,
@@ -43,7 +40,34 @@ class ApartmentModel {
     this.hentree,
     this.hsortie,
     this.equipement,
+    this.Adresse
   });
+
+  static ApartmentModel fromMap(Map<String, dynamic> map, String documentId) {
+    if (map == null) return null;
+
+    return ApartmentModel(
+      nom: map['Nom'],
+      description: map['Description'],
+      image: map['Image'],
+      avis: map['avis'],
+      etoile: map['etoile'],
+      prix: map['prix'],
+      features: map['features'],
+      pictures: map['pictures'],
+      ville: map['ville'],
+      pays: map['pays'],
+      email: map['Email'],
+      user: map['User'],
+      imageProp: map['imageProp'],
+      telephone: map['Telephone'],
+      hentree: map['hentree'],
+      hsortie: map['hsortie'],
+      equipement: map['equipement'],
+      id: documentId,
+      Adresse: map['Adresse'],
+    );
+  }
 }
 
 /*class ApartmentModel {

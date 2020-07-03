@@ -1,4 +1,5 @@
 import 'package:app_flat/pages/ajout_bien.dart';
+import 'package:app_flat/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -63,7 +64,7 @@ class _ProfilePageState extends State<ProfilePage> {
                 color: Colors.white12,
                 child: ListView(
                   children: <Widget>[
-                    HomePage(),
+                    HomePage1(),
                     Reservation(),
                     Favorite(),
                     Offre(),
@@ -79,15 +80,10 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 }
 
-class HomePage extends StatelessWidget {
+class HomePage1 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade100),
-        ),
-      ),
       child: GestureDetector(
         onTap: () {
           Navigator.of(context).push(
@@ -97,33 +93,43 @@ class HomePage extends StatelessWidget {
           );
         },
         child: Container(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Icon(
-                      Icons.menu,
-                      color: Colors.teal[100],
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.shade100),
+            ),
+          ),
+          child: Container(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Icon(
+                        Icons.menu,
+                        color: Colors.teal[100],
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Text(
-                      'Home',
-                      style: TextStyle(fontSize: 16, color: Colors.blueGrey),
+                    Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Text(
+                        'Home ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
                     ),
-                  ),
-                ],
-              ),
-              Icon(
-                Icons.arrow_right,
-                color: Colors.teal[200],
-              ),
-            ],
+                  ],
+                ),
+                Icon(
+                  Icons.arrow_right,
+                  color: Colors.teal[200],
+                ),
+              ],
+            ),
           ),
         ),
       ),
@@ -135,44 +141,52 @@ class Reservation extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade100),
-        ),
-      ),
-      child: InkWell(
-        onTap: () => {HomePage()},
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => HomePage(),
+            ),
+          );
+        },
         child: Container(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Icon(
-                      Icons.calendar_today,
-                      color: Colors.teal[100],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Text(
-                      'Réservation',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blueGrey,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.shade100),
+            ),
+          ),
+          child: Container(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Icon(
+                        Icons.calendar_today,
+                        color: Colors.teal[100],
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Icon(
-                Icons.arrow_right,
-                color: Colors.teal[200],
-              ),
-            ],
+                    Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Text(
+                        'Reservation ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(
+                  Icons.arrow_right,
+                  color: Colors.teal[200],
+                ),
+              ],
+            ),
           ),
         ),
       ),

@@ -184,7 +184,7 @@ class _HomePageState extends State<HomePage> {
                     Align(
                       alignment: Alignment.centerLeft,
                       child: Container(
-                        width: MediaQuery.of(context).size.width * .43,
+                        width: MediaQuery.of(context).size.width * .45,
                         height: 200,
                         padding: EdgeInsets.all(12),
                         decoration: BoxDecoration(
@@ -207,19 +207,26 @@ class _HomePageState extends State<HomePage> {
                             Row(
                               crossAxisAlignment: CrossAxisAlignment.end,
                               children: <Widget>[
+                                Text(
+                                  "A partir de ",
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                                 Icon(
                                   Icons.euro_symbol,
-                                  size: 18,
+                                  size: 15,
                                 ),
                                 Text(
-                                  "${myHotels[index].prix.toInt()}/",
+                                  "${myHotels[index].prix.toInt()}",
                                   style: TextStyle(
-                                    fontSize: 16,
+                                    fontSize: 15,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
                                 Text(
-                                  "nuit",
+                                  "/nuit",
                                   style: TextStyle(
                                     fontSize: 12,
                                     fontWeight: FontWeight.bold,
@@ -228,8 +235,11 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             Text(
-                              "${myHotels[index].typedechambre[index]}",
-                              style: TextStyle(color: Colors.black38),
+                              "${myHotels[index].Adresse}",
+                              style: TextStyle(
+                                color: Colors.black38,
+                                fontSize: 13,
+                              ),
                             ),
                             Row(
                               children: <Widget>[
@@ -244,7 +254,7 @@ class _HomePageState extends State<HomePage> {
                                   ),
                                 ),
                                 Text(
-                                  "${myHotels[index].nbCommentaires.toInt()} reviews",
+                                  "${myHotels[index].avis.length.toInt()} reviews",
                                   style: TextStyle(
                                       color: Colors.black87, fontSize: 10),
                                 ),
@@ -282,7 +292,7 @@ class _HomePageState extends State<HomePage> {
                                 )
                               ],
                             ),
-                            Wrap(
+                            /*Wrap(
                               children: <Widget>[
                                 ...myHotels[index].features.map(
                                   (feature) {
@@ -300,7 +310,7 @@ class _HomePageState extends State<HomePage> {
                                   },
                                 ),
                               ],
-                            ),
+                            ),*/
                           ],
                         ),
                       ),

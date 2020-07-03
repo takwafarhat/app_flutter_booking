@@ -66,10 +66,8 @@ class DatabaseService {
         avis: doc.data['avis'] ?? [],
         etoile: doc.data['etoile'] ?? 0,
         prix: doc.data['prix'] ?? 0,
-        typedechambre: doc.data['typedechambre'] ?? [],
         features: doc.data['features'] ?? [],
         pictures: doc.data['pictures'] ?? [],
-        nbCommentaires: doc.data['nbCommentaires'] ?? 0,
         ville: doc.data['ville'] ?? '',
         pays: doc.data['pays'] ?? '',
         email: doc.data['Email'] ?? '',
@@ -80,6 +78,7 @@ class DatabaseService {
         hsortie: doc.data['hsortie'],
         equipement: doc.data['equipement'] ?? [],
         id: doc.documentID,
+            Adresse: doc.data['Adresse'],
       );
     }).toList();
   }
