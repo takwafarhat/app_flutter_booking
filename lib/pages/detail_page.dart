@@ -1,6 +1,8 @@
 ﻿import 'package:app_flat/core/const.dart';
 import 'package:app_flat/models/chambre.dart';
+import 'package:app_flat/pages/Avis.dart';
 import 'package:app_flat/utils/database.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_slider_indicator/flutter_slider_indicator.dart';
@@ -19,18 +21,30 @@ class _DetailPageState extends State<DetailPage> {
   var _pageController = PageController();
   var _currentIndex = 0;
   var _maxLines = 3;
+  bool isFav;
   List<Chambre> myChambers = [];
+  List<Avis> mesAvis = [];
   @override
   void initState() {
-    getChambers(widget.myHotel.id);
-
     super.initState();
+    getChambers(widget.myHotel.id);
+    isFav = widget.myHotel.favoris;
+    getAvis(widget.myHotel.id);
   }
 
   Future<void> getChambers(hid) async {
     await DatabaseService().getChamberByHotelId(hid).then((value) {
       value.forEach((element) {
         myChambers.add(element);
+      });
+      setState(() {});
+    });
+  }
+
+  Future<void> getAvis(hid) async {
+    await DatabaseService().getavisByHotelId(hid).then((value) {
+      value.forEach((element) {
+        mesAvis.add(element);
       });
       setState(() {});
     });
@@ -270,12 +284,23 @@ class _DetailPageState extends State<DetailPage> {
                 alignment: Alignment.topRight,
                 child: Padding(
                   padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.favorite,
-                        color: Colors.red,
-                      ),
-                      onPressed: () {}),
+                  child: GestureDetector(
+                    child: IconButton(
+                        icon: Icon(
+                          Icons.favorite,
+                          color: isFav == false ? Colors.grey : Colors.red,
+                        ),
+                        onPressed: () async {
+                          setState(() {
+                            isFav = !isFav;
+                          });
+                          await Firestore.instance
+                              .collection("hotels")
+                              .document(widget.myHotel.id)
+                              .updateData(<String, dynamic>{'favoris': isFav});
+                          print('done');
+                        }),
+                  ),
                 ),
               ),
             ]),
@@ -608,61 +633,58 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildAvis() {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      alignment: Alignment.topLeft,
-      child: Column(
-        mainAxisSize: MainAxisSize.max,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(left: 15, bottom: 20),
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15),
-              child: Text("Avis",
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: AppColors.stylecolor,
-                    height: 1.5,
-                  )),
-            ),
-          ),
-          ...widget.myHotel.avis.map(
-            (avis) {
-              return Padding(
-                padding: const EdgeInsets.only(
-                  bottom: 10,
-                  right: 15,
-                ),
-                child: Text(
-                  "- " + avis,
-                ),
-              );
-            },
-          ),
-          Padding(
-            padding: EdgeInsets.only(top: 10, left: 15.0),
-            child: Row(
-              children: <Widget>[
-                RatingBar(
-                  onRatingUpdate: (v) {},
-                  initialRating: widget.myHotel.etoile.toDouble(),
-                  itemSize: 15,
-                  itemBuilder: (context, index) => Icon(
-                    Icons.star,
-                    color: Colors.amber,
+    return mesAvis.length != 0
+        ? ListView.builder(
+            physics: BouncingScrollPhysics(),
+            itemCount: mesAvis.length,
+            itemBuilder: (context, index) {
+              return Align(
+                child: Container(
+                  height: MediaQuery.of(context).size.height,
+                  alignment: Alignment.topLeft,
+                  child: Column(
+                    mainAxisSize: MainAxisSize.max,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(left: 15, bottom: 20),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 15),
+                          child: Text("Avis",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.stylecolor,
+                                height: 1.5,
+                              )),
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(top: 10, left: 15.0),
+                        child: Row(
+                          children: <Widget>[
+                            RatingBar(
+                              onRatingUpdate: (v) {},
+                              initialRating: mesAvis[index].etoile,
+                              itemSize: 15,
+                              itemBuilder: (context, index) => Icon(
+                                Icons.star,
+                                color: Colors.amber,
+                              ),
+                            ),
+                            Text(
+                              "${mesAvis[index].description.toString().length} reviews",
+                              style: TextStyle(
+                                  color: Colors.black87, fontSize: 15),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ),
                 ),
-                Text(
-                  "${widget.myHotel.avis.length} reviews",
-                  style: TextStyle(color: Colors.black87, fontSize: 15),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
+              );
+            })
+        : Container();
   }
 
   Widget _buildChambre() {
@@ -790,15 +812,6 @@ class _DetailPageState extends State<DetailPage> {
                 color: Colors.black87,
                 fontWeight: FontWeight.bold),
           ),
-
-          // Text(
-          //   myChambers[index].type,
-          //   style: TextStyle(
-          //       fontFamily: 'Quicksand',
-          //       fontSize: 15.0,
-          //       color: Colors.black87,
-          //       fontWeight: FontWeight.bold),
-          // ),
           SizedBox(height: 5.0),
           Text(
             myChambers[index].nomHotel,
@@ -812,15 +825,6 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildMap() {
-    return Container(
-      height: MediaQuery.of(context).size.height,
-      color: Colors.blueAccent,
-      child: Center(
-        child: Text(
-          'Hi from Hospital',
-          style: TextStyle(color: Colors.white),
-        ),
-      ),
-    );
+    return Container();
   }
 }

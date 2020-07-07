@@ -2,13 +2,13 @@ import 'package:app_flat/pages/home_page.dart';
 import 'package:flutter/material.dart';
 import 'Login/LoginScreen.dart';
 
-void main() => runApp(FlashChat());
+void main() => runApp(LocaVacance());
 
-class FlashChat extends StatelessWidget {
+class LocaVacance extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      initialRoute: HomePage.id,
+      initialRoute: HomePage.id, //LoginSignupPage.id,
       routes: {
         LoginSignupPage.id: (context) => LoginSignupPage(),
         HomePage.id: (context) => HomePage(),

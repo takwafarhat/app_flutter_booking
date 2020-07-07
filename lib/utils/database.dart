@@ -1,4 +1,5 @@
 import 'package:app_flat/models/chambre.dart';
+import 'package:app_flat/pages/Avis.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/apartment_model.dart';
@@ -60,26 +61,26 @@ class DatabaseService {
     return snapshot.documents.map((doc) {
       //print(doc.data);
       return ApartmentModel(
-        nom: doc.data['Nom'] ?? '',
-        description: doc.data['Description'] ?? '',
-        image: doc.data['Image'] ?? '',
-        avis: doc.data['avis'] ?? [],
-        etoile: doc.data['etoile'] ?? 0,
-        prix: doc.data['prix'] ?? 0,
-        features: doc.data['features'] ?? [],
-        pictures: doc.data['pictures'] ?? [],
-        ville: doc.data['ville'] ?? '',
-        pays: doc.data['pays'] ?? '',
-        email: doc.data['Email'] ?? '',
-        user: doc.data['User'] ?? '',
-        imageProp: doc.data['imageProp'] ?? '',
-        telephone: doc.data['Telephone'] ?? 0,
-        hentree: doc.data['hentree'],
-        hsortie: doc.data['hsortie'],
-        equipement: doc.data['equipement'] ?? [],
-        id: doc.documentID,
-            Adresse: doc.data['Adresse'],
-      );
+          nom: doc.data['Nom'] ?? '',
+          description: doc.data['Description'] ?? '',
+          image: doc.data['Image'] ?? '',
+          avis: doc.data['avis'] ?? [],
+          etoile: doc.data['etoile'] ?? 0,
+          prix: doc.data['prix'] ?? 0,
+          features: doc.data['features'] ?? [],
+          pictures: doc.data['pictures'] ?? [],
+          ville: doc.data['ville'] ?? '',
+          pays: doc.data['pays'] ?? '',
+          email: doc.data['Email'] ?? '',
+          user: doc.data['User'] ?? '',
+          imageProp: doc.data['imageProp'] ?? '',
+          telephone: doc.data['Telephone'] ?? 0,
+          hentree: doc.data['hentree'],
+          hsortie: doc.data['hsortie'],
+          equipement: doc.data['equipement'] ?? [],
+          id: doc.documentID,
+          address: doc.data['Adresse'],
+          favoris: doc.data['favoris']);
     }).toList();
   }
 
@@ -89,20 +90,6 @@ class DatabaseService {
 
   final CollectionReference chambreCollection =
       Firestore.instance.collection('chambres');
-
-  // Future<void> updatechambreData(
-  //   String nomHotel,
-  //   String photo,
-  //   int prix,
-  //   String type,
-  // ) async {
-  //   return await chambreCollection.document().setData({
-  //     'nomHotel': nomHotel,
-  //     'photo': photo,
-  //     'prix': prix,
-  //     'type': type,
-  //   });
-  // }
 
   List<Chambre> chambreListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
@@ -127,7 +114,38 @@ class DatabaseService {
               (snapshot) => Chambre.fromMap(snapshot.data, snapshot.documentID))
           .where((mappedItem) => mappedItem.idhotel == idhotel)
           .toList();
-          return list;
-    } else return [];
+      return list;
+    } else
+      return [];
+  }
+
+  final CollectionReference avisCollection =
+      Firestore.instance.collection('Avis');
+
+  List<Avis> avisListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      Avis(
+        idhotel: doc.data['idhotel'] ?? '',
+        iduser: doc.data['iduser'] ?? '',
+        description: doc.data['description'] ?? '',
+        etoile: doc.data['etoile'] ?? 0,
+      );
+    }).toList();
+  }
+
+  Stream<List<Avis>> get avis {
+    return avisCollection.snapshots().map(avisListFromSnapshot);
+  }
+
+  Future<List<Avis>> getavisByHotelId(String idhotel) async {
+    var postDocuments = await avisCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      List<Avis> list = postDocuments.documents
+          .map((snapshot) => Avis.fromMap(snapshot.data, snapshot.documentID))
+          .where((mappedItem) => mappedItem.idhotel == idhotel)
+          .toList();
+      return list;
+    } else
+      return [];
   }
 }

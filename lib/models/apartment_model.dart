@@ -19,54 +19,55 @@ class ApartmentModel {
   final Timestamp hsortie;
   final List equipement;
   final String id;
-  String Adresse;
+  final String address;
+  final bool favoris;
 
-  ApartmentModel({
-    this.id,
-    this.description,
-    this.nom,
-    this.image,
-    this.avis,
-    this.etoile,
-    this.prix,
-    this.features,
-    this.pictures,
-    this.pays,
-    this.ville,
-    this.user,
-    this.telephone,
-    this.imageProp,
-    this.email,
-    this.hentree,
-    this.hsortie,
-    this.equipement,
-    this.Adresse
-  });
+  ApartmentModel(
+      {this.id,
+      this.description,
+      this.nom,
+      this.image,
+      this.avis,
+      this.etoile,
+      this.prix,
+      this.features,
+      this.pictures,
+      this.pays,
+      this.ville,
+      this.user,
+      this.telephone,
+      this.imageProp,
+      this.email,
+      this.hentree,
+      this.hsortie,
+      this.equipement,
+      this.address,
+      this.favoris});
 
   static ApartmentModel fromMap(Map<String, dynamic> map, String documentId) {
     if (map == null) return null;
 
     return ApartmentModel(
-      nom: map['Nom'],
-      description: map['Description'],
-      image: map['Image'],
-      avis: map['avis'],
-      etoile: map['etoile'],
-      prix: map['prix'],
-      features: map['features'],
-      pictures: map['pictures'],
-      ville: map['ville'],
-      pays: map['pays'],
-      email: map['Email'],
-      user: map['User'],
-      imageProp: map['imageProp'],
-      telephone: map['Telephone'],
-      hentree: map['hentree'],
-      hsortie: map['hsortie'],
-      equipement: map['equipement'],
-      id: documentId,
-      Adresse: map['Adresse'],
-    );
+        nom: map['Nom'],
+        description: map['Description'],
+        image: map['Image'],
+        avis: map['avis'],
+        etoile: map['etoile'],
+        prix: map['prix'],
+        features: map['features'],
+        pictures: map['pictures'],
+        ville: map['ville'],
+        pays: map['pays'],
+        email: map['Email'],
+        user: map['User'],
+        imageProp: map['imageProp'],
+        telephone: map['Telephone'],
+        hentree: map['hentree'],
+        hsortie: map['hsortie'],
+        equipement: map['equipement'],
+        id: documentId,
+        address: map['Adresse'],
+        favoris: map['favoris']);
   }
 }
 

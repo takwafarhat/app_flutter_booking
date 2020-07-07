@@ -6,7 +6,6 @@ import 'package:flutter/material.dart';
 import 'package:app_flat/utils/database.dart';
 import 'package:app_flat/pages/detail_page.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
-import 'package:app_flat/core/const.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
@@ -235,7 +234,7 @@ class _HomePageState extends State<HomePage> {
                               ],
                             ),
                             Text(
-                              "${myHotels[index].Adresse}",
+                              "${myHotels[index].address}",
                               style: TextStyle(
                                 color: Colors.black38,
                                 fontSize: 13,

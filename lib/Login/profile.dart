@@ -1,4 +1,5 @@
 import 'package:app_flat/pages/ajout_bien.dart';
+import 'package:app_flat/pages/favorites.dart';
 import 'package:app_flat/pages/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -198,44 +199,52 @@ class Favorite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: Colors.grey.shade100),
-        ),
-      ),
-      child: InkWell(
-        onTap: () => {HomePage()},
+      child: GestureDetector(
+        onTap: () {
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => FavoriteScreen(),
+            ),
+          );
+        },
         child: Container(
-          height: 50,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(15),
-                    child: Icon(
-                      Icons.favorite,
-                      color: Colors.teal[100],
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(5),
-                    child: Text(
-                      'Favorite',
-                      style: TextStyle(
-                        fontSize: 16,
-                        color: Colors.blueGrey,
+          decoration: BoxDecoration(
+            border: Border(
+              bottom: BorderSide(color: Colors.grey.shade100),
+            ),
+          ),
+          child: Container(
+            height: 50,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                Row(
+                  children: <Widget>[
+                    Padding(
+                      padding: EdgeInsets.all(15),
+                      child: Icon(
+                        Icons.favorite,
+                        color: Colors.teal[100],
                       ),
                     ),
-                  ),
-                ],
-              ),
-              Icon(
-                Icons.arrow_right,
-                color: Colors.teal[200],
-              ),
-            ],
+                    Padding(
+                      padding: EdgeInsets.all(5),
+                      child: Text(
+                        'Favorite ',
+                        style: TextStyle(
+                          fontSize: 16,
+                          color: Colors.blueGrey,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Icon(
+                  Icons.arrow_right,
+                  color: Colors.teal[200],
+                ),
+              ],
+            ),
           ),
         ),
       ),
