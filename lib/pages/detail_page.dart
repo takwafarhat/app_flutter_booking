@@ -1,6 +1,7 @@
 ﻿import 'package:app_flat/core/const.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/Avis.dart';
+import 'package:app_flat/pages/chamber/ReserverChamber.dart';
 import 'package:app_flat/utils/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -8,6 +9,7 @@ import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter_slider_indicator/flutter_slider_indicator.dart';
 import '../models/apartment_model.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:smooth_star_rating/smooth_star_rating.dart';
 
 class DetailPage extends StatefulWidget {
   final ApartmentModel myHotel;
@@ -633,58 +635,109 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildAvis() {
-    return mesAvis.length != 0
-        ? ListView.builder(
-            physics: BouncingScrollPhysics(),
-            itemCount: mesAvis.length,
-            itemBuilder: (context, index) {
-              return Align(
-                child: Container(
-                  height: MediaQuery.of(context).size.height,
-                  alignment: Alignment.topLeft,
-                  child: Column(
-                    mainAxisSize: MainAxisSize.max,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Padding(
-                        padding: const EdgeInsets.only(left: 15, bottom: 20),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 15),
-                          child: Text("Avis",
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: AppColors.stylecolor,
-                                height: 1.5,
-                              )),
-                        ),
-                      ),
-                      Padding(
-                        padding: EdgeInsets.only(top: 10, left: 15.0),
-                        child: Row(
-                          children: <Widget>[
-                            RatingBar(
-                              onRatingUpdate: (v) {},
-                              initialRating: mesAvis[index].etoile,
-                              itemSize: 15,
-                              itemBuilder: (context, index) => Icon(
-                                Icons.star,
-                                color: Colors.amber,
-                              ),
-                            ),
-                            Text(
-                              "${mesAvis[index].description.toString().length} reviews",
-                              style: TextStyle(
-                                  color: Colors.black87, fontSize: 15),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ],
+    AlertDialog dialog = new AlertDialog(
+      shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(32.0))),
+      contentPadding: EdgeInsets.only(top: 10.0),
+      content: Container(
+        width: 260.0,
+        height: 230.0,
+        decoration: new BoxDecoration(
+          shape: BoxShape.rectangle,
+          color: const Color(0xFFFFFF),
+          borderRadius: BorderRadius.all(Radius.circular(20.0)),
+        ),
+        child: new Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: <Widget>[
+            // dialog top
+            new Expanded(
+              child: new Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                mainAxisSize: MainAxisSize.min,
+                children: <Widget>[
+                  Text(
+                    "Note",
+                    style: TextStyle(fontSize: 24.0),
+                  ),
+                  SmoothStarRating(
+                    color: Colors.amber,
+                    borderColor: Colors.grey,
+                    allowHalfRating: true,
+                  )
+                ],
+              ),
+            ),
+
+            // dialog centre
+            new Expanded(
+              child: new Container(
+                  child: new TextFormField(
+                decoration: new InputDecoration(
+                  border: InputBorder.none,
+                  filled: false,
+                  contentPadding: new EdgeInsets.only(
+                      left: 10.0, top: 10.0, bottom: 10.0, right: 10.0),
+                  hintText: ' Ajouter votre avis',
+                  hintStyle: new TextStyle(
+                    color: Colors.grey.shade500,
+                    fontSize: 12.0,
+                    fontFamily: 'helvetica_neue_light',
                   ),
                 ),
-              );
-            })
-        : Container();
+              )),
+              flex: 2,
+            ),
+
+            // dialog bottom
+            new Expanded(
+              child: Container(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                decoration: BoxDecoration(
+                  color: Colors.teal,
+                  borderRadius: BorderRadius.only(
+                      bottomLeft: Radius.circular(32.0),
+                      bottomRight: Radius.circular(32.0)),
+                ),
+                child: Text(
+                  "Rate Product",
+                  style: TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+
+    return Scaffold(
+      body: Container(
+        height: MediaQuery.of(context).size.height,
+        alignment: Alignment.topLeft,
+        child: Column(
+          mainAxisSize: MainAxisSize.max,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            //SizedBox(height: 30),
+            _buildtextAvis(),
+            _buildRatingBar(mesAvis: mesAvis),
+          ],
+        ),
+      ),
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return dialog;
+            },
+          );
+        },
+        label: Text('Ajouter Avis'),
+        backgroundColor: Colors.teal,
+      ),
+    );
   }
 
   Widget _buildChambre() {
@@ -774,8 +827,14 @@ class _DetailPageState extends State<DetailPage> {
                 SizedBox(width: 35.0),
                 Container(
                   child: FlatButton(
-                    color: Colors.teal,
-                    onPressed: () {},
+                    color: Colors.teal[200],
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Reserverchamber(),
+                          ));
+                    },
                     textColor: Colors.white,
                     child: Text(
                       'Reserver',
@@ -826,5 +885,66 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildMap() {
     return Container();
+  }
+}
+
+class _buildRatingBar extends StatelessWidget {
+  const _buildRatingBar({
+    Key key,
+    @required this.mesAvis,
+  }) : super(key: key);
+
+  final List<Avis> mesAvis;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      child: Padding(
+        padding: const EdgeInsets.all(5.0),
+        child: mesAvis.length != 0
+            ? ListView.builder(
+                physics: BouncingScrollPhysics(),
+                itemCount: mesAvis.length,
+                itemBuilder: (context, index) {
+                  return Align(
+                    child: Row(
+                      children: <Widget>[
+                        //Text(mesAvis[index].etoile)
+
+                        RatingBar(
+                          onRatingUpdate: (v) {},
+                          initialRating: mesAvis[index].etoile,
+                          itemSize: 15,
+                          allowHalfRating: true,
+                          itemBuilder: (context, index) => Icon(
+                            Icons.star,
+                            color: Colors.amber,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                })
+            : Container(),
+      ),
+    );
+  }
+}
+
+class _buildtextAvis extends StatelessWidget {
+  const _buildtextAvis({
+    Key key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Text("Classement et avis: ",
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 20,
+          color: Colors.black,
+          height: 1.5,
+        ));
   }
 }

@@ -17,7 +17,7 @@ class Avis {
     return Avis(
       idhotel: map['idhotel'],
       iduser: map['iduser'],
-      description: map['description'],
+      description: map['Description'],
       etoile: map['etoile'].toDouble(),
     );
   }

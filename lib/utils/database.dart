@@ -127,7 +127,7 @@ class DatabaseService {
       Avis(
         idhotel: doc.data['idhotel'] ?? '',
         iduser: doc.data['iduser'] ?? '',
-        description: doc.data['description'] ?? '',
+        description: doc.data['Description'] ?? '',
         etoile: doc.data['etoile'] ?? 0,
       );
     }).toList();
