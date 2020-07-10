@@ -1,7 +1,7 @@
 ﻿import 'package:app_flat/core/const.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/Avis.dart';
-import 'package:app_flat/pages/chamber/ReserverChamber.dart';
+import 'package:app_flat/pages/chamber/DetailsChambre.dart';
 import 'package:app_flat/utils/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -26,6 +26,7 @@ class _DetailPageState extends State<DetailPage> {
   bool isFav;
   List<Chambre> myChambers = [];
   List<Avis> mesAvis = [];
+
   @override
   void initState() {
     super.initState();
@@ -38,6 +39,7 @@ class _DetailPageState extends State<DetailPage> {
     await DatabaseService().getChamberByHotelId(hid).then((value) {
       value.forEach((element) {
         myChambers.add(element);
+        print(element.equipement.toString());
       });
       setState(() {});
     });
@@ -54,7 +56,6 @@ class _DetailPageState extends State<DetailPage> {
 
   @override
   Widget build(BuildContext context) {
-    print('rebuilt UI');
     _pageController.addListener(() {
       setState(() {
         _currentIndex = _pageController.page.round();
@@ -612,11 +613,12 @@ class _DetailPageState extends State<DetailPage> {
           Container(
             height: 50,
             width: MediaQuery.of(context).size.width,
-            child: PageView.builder(
+            child: ListView.builder(
               controller: PageController(
                 initialPage: 0,
                 viewportFraction: 0.2,
               ),
+              itemExtent: 70,
               scrollDirection: Axis.horizontal,
               itemCount: widget.myHotel.equipement.length,
               itemBuilder: (context, index) {
@@ -785,13 +787,14 @@ class _DetailPageState extends State<DetailPage> {
     return Row(
       children: <Widget>[
         Container(
-          width: 60.0,
+          width: 90.0,
           height: 90.0,
           decoration: BoxDecoration(
-              borderRadius: BorderRadius.all(Radius.circular(4)),
-              image: DecorationImage(
-                  image: NetworkImage(myChambers[index].photo),
-                  fit: BoxFit.cover)),
+            borderRadius: BorderRadius.all(Radius.circular(4)),
+            image: DecorationImage(
+                image: NetworkImage(myChambers[index].photo),
+                fit: BoxFit.cover),
+          ),
         ),
         SizedBox(width: 4.0),
         Column(
@@ -816,6 +819,10 @@ class _DetailPageState extends State<DetailPage> {
                               fontFamily: 'Quicksand',
                               fontWeight: FontWeight.bold),
                         ),
+                        Icon(
+                          Icons.euro_symbol,
+                          size: 10,
+                        ),
                         Text(
                           " /nuits",
                           style: TextStyle(color: Colors.black, fontSize: 10),
@@ -832,12 +839,14 @@ class _DetailPageState extends State<DetailPage> {
                       Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => Reserverchamber(),
+                            builder: (context) => DetailsChambre(
+                              myChambers: myChambers[index],
+                            ),
                           ));
                     },
                     textColor: Colors.white,
                     child: Text(
-                      'Reserver',
+                      'Details',
                       style: TextStyle(
                           fontFamily: 'Quicksand',
                           color: Colors.white,
@@ -872,11 +881,21 @@ class _DetailPageState extends State<DetailPage> {
                 fontWeight: FontWeight.bold),
           ),
           SizedBox(height: 5.0),
-          Text(
-            myChambers[index].nomHotel,
-            textAlign: TextAlign.left,
-            style: TextStyle(
-                fontFamily: 'Quicksand', color: Colors.grey, fontSize: 12.0),
+          Row(
+            children: <Widget>[
+              Icon(
+                Icons.people_outline,
+                color: Colors.grey,
+              ),
+              Text(
+                '   Tarif pour deux adultes',
+                textAlign: TextAlign.left,
+                style: TextStyle(
+                    fontFamily: 'Quicksand',
+                    color: Colors.grey,
+                    fontSize: 12.0),
+              ),
+            ],
           ),
         ],
       ),

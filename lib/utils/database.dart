@@ -98,6 +98,9 @@ class DatabaseService {
         photo: doc.data['photo'] ?? '',
         prix: doc.data['prix'] ?? 0,
         type: doc.data['type'] ?? [],
+        equipement: doc.data['equipement'] ?? [],
+        pictures: doc.data['pictures'] ?? [],
+        description: doc.data['description'] ?? '',
       );
     }).toList();
   }

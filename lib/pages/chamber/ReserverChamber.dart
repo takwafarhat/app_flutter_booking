@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -211,7 +209,7 @@ class _ReserverchamberState extends State<Reserverchamber> {
                           Radius.circular(4.0),
                         ),
                         onTap: () {
-                          // FocusScope.of(context).requestFocus(FocusNode());
+                          showDemoDialog(context: context);
                         },
                         child: Padding(
                           padding: const EdgeInsets.only(
@@ -282,13 +280,13 @@ class _ReserverchamberState extends State<Reserverchamber> {
                           // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                           children: <Widget>[
                             Text(
-                              'Chambre',
+                              'Hébergement',
                               style: TextStyle(
                                   fontWeight: FontWeight.w400,
                                   fontSize: 16,
                                   color: Colors.black.withOpacity(0.8)),
                             ),
-                            Text('\t          \t'),
+                            Text('   '),
                             new FlatButton(
                               onPressed: minusCham,
                               child: new Icon(

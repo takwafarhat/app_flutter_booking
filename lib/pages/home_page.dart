@@ -1,11 +1,14 @@
 import 'package:app_flat/Login/profile.dart';
 import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/pages/ajout_bien.dart';
+import 'package:app_flat/pages/filtre/filters_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:app_flat/utils/database.dart';
 import 'package:app_flat/pages/detail_page.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
+import 'package:app_flat/pages/filtre/hotel_app_theme.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
@@ -50,16 +53,23 @@ class _HomePageState extends State<HomePage> {
                   colors: <Color>[Colors.blueGrey[50], Colors.teal[200]])),
         ),
         title: Text(
-          "Fin your hotel",
-          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+          "Loca Vacances",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
         ),
         actions: <Widget>[
           IconButton(
             icon: Icon(
-              Icons.search,
+              Icons.sort,
               color: Colors.black38,
             ),
-            onPressed: () {},
+            onPressed: () {
+              Navigator.push<dynamic>(
+                context,
+                MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => FiltersScreen(),
+                    fullscreenDialog: true),
+              );
+            },
           ),
         ],
       ),
@@ -76,6 +86,7 @@ class _HomePageState extends State<HomePage> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
+          getSearchBarUI(),
           Expanded(
             child: StreamBuilder(
               stream: DatabaseService().hotels,
@@ -86,19 +97,93 @@ class _HomePageState extends State<HomePage> {
                   itemCount: myHotels != null ? myHotels.length : 0,
                   itemBuilder: (context, index) {
                     return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => DetailPage(
-                                myHotel: myHotels[index],
-                              ),
+                      onTap: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => DetailPage(
+                              myHotel: myHotels[index],
                             ),
-                          );
-                        },
-                        child: _buildItem(context, index));
+                          ),
+                        );
+                      },
+                      child: _buildItem(context, index),
+                    );
                   },
                 );
               },
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget getSearchBarUI() {
+    return Padding(
+      padding: const EdgeInsets.only(left: 10, right: 10),
+      child: Row(
+        children: <Widget>[
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 10, top: 5, bottom: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                  color: HotelAppTheme.buildLightTheme().backgroundColor,
+                  borderRadius: const BorderRadius.all(
+                    Radius.circular(38.0),
+                  ),
+                  boxShadow: <BoxShadow>[
+                    BoxShadow(
+                        color: Colors.grey.withOpacity(0.2),
+                        offset: const Offset(0, 2),
+                        blurRadius: 8.0),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                      left: 10, right: 10, top: 4, bottom: 4),
+                  child: TextField(
+                    onChanged: (String txt) {},
+                    style: const TextStyle(
+                      fontSize: 18,
+                    ),
+                    cursorColor: HotelAppTheme.buildLightTheme().primaryColor,
+                    decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: 'Rechercher ...',
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+          Container(
+            decoration: BoxDecoration(
+              color: HotelAppTheme.buildLightTheme().primaryColor,
+              borderRadius: const BorderRadius.all(
+                Radius.circular(38.0),
+              ),
+              boxShadow: <BoxShadow>[
+                BoxShadow(
+                    color: Colors.grey.withOpacity(0.4),
+                    offset: const Offset(0, 2),
+                    blurRadius: 8.0),
+              ],
+            ),
+            child: Container(
+              color: Colors.transparent,
+              child: InkWell(
+                borderRadius: const BorderRadius.all(
+                  Radius.circular(32.0),
+                ),
+                onTap: () {},
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Icon(FontAwesomeIcons.search,
+                      size: 20,
+                      color: HotelAppTheme.buildLightTheme().backgroundColor),
+                ),
+              ),
             ),
           ),
         ],
