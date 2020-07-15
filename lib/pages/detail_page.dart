@@ -21,7 +21,7 @@ class DetailPage extends StatefulWidget {
 }
 
 class _DetailPageState extends State<DetailPage> {
-  var _pageController = PageController();
+  var _pageController = PageController(viewportFraction: 1, keepPage: false);
   var _currentIndex = 0;
   var _maxLines = 3;
   bool isFav;
@@ -79,7 +79,8 @@ class _DetailPageState extends State<DetailPage> {
   Widget _buildWidgetScroll() {
     return DraggableScrollableSheet(
         expand: true,
-        initialChildSize: 0.6,
+        initialChildSize: 0.7,
+        maxChildSize: 1.0,
         builder: (context, controller) {
           return SingleChildScrollView(
             child: Container(
@@ -92,7 +93,7 @@ class _DetailPageState extends State<DetailPage> {
                 ),
               ),
               child: Column(
-                mainAxisSize: MainAxisSize.max,
+                mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
                   /*Center(
@@ -233,16 +234,13 @@ class _DetailPageState extends State<DetailPage> {
                                   ),
                                 ]),
                             Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.all(20),
-                                child: TabBarView(
-                                  children: [
-                                    _buildDetails(),
-                                    _buildAvis(),
-                                    _buildChambre(),
-                                    _buildMap()
-                                  ],
-                                ),
+                              child: TabBarView(
+                                children: [
+                                  _buildDetails(),
+                                  _buildAvis(),
+                                  _buildChambre(),
+                                  _buildMap()
+                                ],
                               ),
                             ),
                           ],
@@ -258,59 +256,57 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildImageSlider(BuildContext context) {
-    return Container(
-      height: MediaQuery.of(context).size.height * 0.5,
-      child: PageView.builder(
-        controller: _pageController,
-        itemCount: widget.myHotel.pictures.length,
-        itemBuilder: (context, index) {
-          return Container(
-            child: Stack(children: <Widget>[
-              Image.network(
-                widget.myHotel.pictures[index],
-                fit: BoxFit.cover,
-              ),
-              Align(
-                alignment: Alignment.topLeft,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                  child: IconButton(
-                      icon: Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                      ),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      }),
-                ),
-              ),
-              Align(
-                alignment: Alignment.topRight,
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
-                  child: GestureDetector(
-                    child: IconButton(
-                        icon: Icon(
-                          Icons.favorite,
-                          color: isFav == false ? Colors.grey : Colors.red,
-                        ),
-                        onPressed: () async {
-                          setState(() {
-                            isFav = !isFav;
-                          });
-                          await Firestore.instance
-                              .collection("hotels")
-                              .document(widget.myHotel.id)
-                              .updateData(<String, dynamic>{'favoris': isFav});
-                          print('done');
-                        }),
+    return PageView.builder(
+      scrollDirection: Axis.horizontal,
+      controller: _pageController,
+      itemCount: widget.myHotel.pictures.length,
+      itemBuilder: (context, index) {
+        return Stack(children: <Widget>[
+          Image.network(
+            widget.myHotel.pictures[index],
+            fit: BoxFit.fill,
+            height: MediaQuery.of(context).size.height * .3,
+            width: MediaQuery.of(context).size.width,
+          ),
+          Align(
+            alignment: Alignment.topLeft,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+              child: IconButton(
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: Colors.white,
                   ),
-                ),
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  }),
+            ),
+          ),
+          Align(
+            alignment: Alignment.topRight,
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20.0, vertical: 20),
+              child: GestureDetector(
+                child: IconButton(
+                    icon: Icon(
+                      Icons.favorite,
+                      color: isFav == false ? Colors.grey : Colors.red,
+                    ),
+                    onPressed: () async {
+                      setState(() {
+                        isFav = !isFav;
+                      });
+                      await Firestore.instance
+                          .collection("hotels")
+                          .document(widget.myHotel.id)
+                          .updateData(<String, dynamic>{'favoris': isFav});
+                      print('done');
+                    }),
               ),
-            ]),
-          );
-        },
-      ),
+            ),
+          ),
+        ]);
+      },
     );
   }
 
@@ -714,35 +710,29 @@ class _DetailPageState extends State<DetailPage> {
       ),
     );
 
-    return Scaffold(
-      body: Container(
-        height: MediaQuery.of(context).size.height,
-        alignment: Alignment.topLeft,
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            //SizedBox(height: 30),
-            Expanded(
-                child: ApartmentModelReviewRatingScreen(
-              avisList: mesAvis,
-            )),
-            //   _buildRatingBar(mesAvis: mesAvis),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton.extended(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (BuildContext context) {
-              return dialog;
-            },
-          );
-        },
-        label: Text('Ajouter Avis'),
-        backgroundColor: Colors.teal,
-      ),
+    return Column(
+      mainAxisSize: MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: <Widget>[
+        Expanded(
+            child: ApartmentModelReviewRatingScreen(
+          avisList: mesAvis,
+        )),
+        //   _buildRatingBar(mesAvis: mesAvis),
+      ],
+
+      // floatingActionButton: FloatingActionButton.extended(
+      //   onPressed: () {
+      //     showDialog(
+      //       context: context,
+      //       builder: (BuildContext context) {
+      //         return dialog;
+      //       },
+      //     );
+      //   },
+      //   label: Text('Ajouter Avis'),
+      //   backgroundColor: Colors.teal,
+      // ),
     );
   }
 

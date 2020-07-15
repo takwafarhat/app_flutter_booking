@@ -24,7 +24,7 @@ class OpenFlutterRatingSummary extends StatelessWidget {
     this.ratingQuantity = 0,
     this.showLabel = true,
     this.ratingDetail,
-    this.barColor = Colors.redAccent,
+    this.barColor = Colors.teal,
     this.barHeight = 10.0,
     this.starIconSize = 14.0,
     this.labelFontSize = 14.0,

@@ -1,7 +1,4 @@
-import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/pages/Avis/Avis.dart';
-import 'package:app_flat/pages/Avis/custom_button.dart';
-import 'package:app_flat/pages/Avis/custom_checkbox.dart';
 import 'package:app_flat/pages/Avis/product_review.dart';
 import 'package:app_flat/pages/Avis/product_review_item.dart';
 import 'package:app_flat/pages/Avis/rating_summary.dart';
@@ -108,15 +105,19 @@ class ApartmentModelReviewWrapperState
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: <Widget>[
-        _buildRatingSummary(context),
-        Column(
-          children: _getApartmentModelReview()
-              .map((e) => _buildApartmentModelReviewItem(e))
-              .toList(),
-        ),
-      ],
+    return SingleChildScrollView(
+      child: Column(
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          _buildRatingSummary(context),
+          Column(
+            mainAxisSize: MainAxisSize.max,
+            children: _getApartmentModelReview()
+                .map((e) => _buildApartmentModelReviewItem(e))
+                .toList(),
+          ),
+        ],
+      ),
     );
   }
 }
@@ -185,23 +186,19 @@ Widget _buildRatingSummary(BuildContext context) {
 // }
 
 Widget _buildApartmentModelReviewItem(ApartmentModelReview x) {
-  return Column(
-    children: <Widget>[
-      Padding(
-        padding: const EdgeInsets.only(
-          bottom: 16.0,
-        ),
-        child: OpenFlutterProductReviewItem(
-          rating: x.rating.roundToDouble(),
-          writerName: x.authorName,
-          isHelpfulMarked: true,
-          comment: x.comment,
-          avatarUrl: x.authorPhotoUrl,
-          withPhotos: true,
-          photos: x.photos,
-        ),
-      ),
-    ],
+  return Padding(
+    padding: const EdgeInsets.only(
+      bottom: 16.0,
+    ),
+    child: OpenFlutterProductReviewItem(
+      rating: x.rating.roundToDouble(),
+      writerName: x.authorName,
+      isHelpfulMarked: true,
+      comment: x.comment,
+      avatarUrl: x.authorPhotoUrl,
+      withPhotos: true,
+      photos: x.photos,
+    ),
   );
 }
 
