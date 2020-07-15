@@ -1,3 +1,5 @@
+import 'dart:math';
+
 class Chambre {
   final String nomHotel;
   final int prix;
@@ -8,6 +10,8 @@ class Chambre {
   final List equipement;
   final List pictures;
   final String description;
+  final int ratingCount;
+  final double averageRating;
 
   Chambre(
       {this.prix,
@@ -18,7 +22,9 @@ class Chambre {
       this.id,
       this.equipement,
       this.pictures,
-      this.description});
+      this.description,
+      this.ratingCount,
+      this.averageRating});
 
   static Chambre fromMap(Map<String, dynamic> map, String documentId) {
     if (map == null) return null;
@@ -33,6 +39,7 @@ class Chambre {
       pictures: map['pictures'],
       description: map['description'],
       id: documentId,
+      ratingCount: 5,
     );
   }
 }

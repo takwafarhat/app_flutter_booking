@@ -2,7 +2,7 @@
 // Author: juan.agu@outlook.com
 // Date: 2020-02-23
 
-import 'package:app_flat/pages/product_rating.dart';
+import 'package:app_flat/pages/Avis/product_rating.dart';
 import 'package:flutter/material.dart';
 
 class OpenFlutterRatingSummary extends StatelessWidget {
@@ -33,18 +33,13 @@ class OpenFlutterRatingSummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    print('la liste est : ' + _buildList(context).toString());
-    return Scaffold(
-      body: Stack(children: <Widget>[
-        Container(
-          child: Row(
-            children: <Widget>[
-              _buildSummaryQuantity(context),
-              _buildSummaryList(context),
-            ],
-          ),
-        ),
-      ]),
+    return Container(
+      child: Row(
+        children: <Widget>[
+          _buildSummaryQuantity(context),
+          _buildSummaryList(context),
+        ],
+      ),
     );
   }
 
@@ -78,7 +73,7 @@ class OpenFlutterRatingSummary extends StatelessWidget {
   Widget _buildLabel(BuildContext context) {
     if (showLabel) {
       return Text(
-        '${ratingQuantity.toString()} ratings',
+        '${ratingQuantity.toString()} ratings ',
         style: Theme.of(context).textTheme.caption.copyWith(
               color: Colors.grey,
               fontSize: labelFontSize,
@@ -206,7 +201,7 @@ class StarQuantity {
   final int quantity;
 
   StarQuantity({
-    this.rating = 5,
-    this.quantity = 5,
+    this.rating,
+    this.quantity,
   });
 }

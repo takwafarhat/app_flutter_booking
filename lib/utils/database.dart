@@ -1,5 +1,5 @@
 import 'package:app_flat/models/chambre.dart';
-import 'package:app_flat/pages/Avis.dart';
+import 'package:app_flat/pages/Avis/Avis.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/apartment_model.dart';

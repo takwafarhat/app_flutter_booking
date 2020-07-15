@@ -1,7 +1,6 @@
 import 'package:app_flat/pages/ajout_bien.dart';
 import 'package:app_flat/pages/favorites.dart';
 import 'package:app_flat/pages/home_page.dart';
-import 'package:app_flat/pages/rating_summary.dart';
 import 'package:flutter/material.dart';
 
 class ProfilePage extends StatefulWidget {
@@ -204,8 +203,7 @@ class Favorite extends StatelessWidget {
         onTap: () {
           Navigator.of(context).push(
             MaterialPageRoute(
-              builder: (context) =>
-                  OpenFlutterRatingSummary(), //FavoriteScreen()OpenFlutterRatingSummary(),
+              builder: (context) => FavoriteScreen(),
             ),
           );
         },

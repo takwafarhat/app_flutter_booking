@@ -1,6 +1,7 @@
 ﻿import 'package:app_flat/core/const.dart';
 import 'package:app_flat/models/chambre.dart';
-import 'package:app_flat/pages/Avis.dart';
+import 'package:app_flat/pages/Avis/Avis.dart';
+import 'package:app_flat/pages/Avis/product_review_and_rating_screen.dart';
 import 'package:app_flat/pages/chamber/DetailsChambre.dart';
 import 'package:app_flat/utils/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -722,8 +723,11 @@ class _DetailPageState extends State<DetailPage> {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             //SizedBox(height: 30),
-            _buildtextAvis(),
-            _buildRatingBar(mesAvis: mesAvis),
+            Expanded(
+                child: ApartmentModelReviewRatingScreen(
+              avisList: mesAvis,
+            )),
+            //   _buildRatingBar(mesAvis: mesAvis),
           ],
         ),
       ),
@@ -958,7 +962,7 @@ class _buildtextAvis extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Text("Classement et avis: ",
+    return Text("Classement & Avis: ",
         style: TextStyle(
           fontWeight: FontWeight.bold,
           fontSize: 20,

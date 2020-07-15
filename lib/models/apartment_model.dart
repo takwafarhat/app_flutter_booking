@@ -22,27 +22,28 @@ class ApartmentModel {
   final String address;
   final bool favoris;
 
-  ApartmentModel(
-      {this.id,
-      this.description,
-      this.nom,
-      this.image,
-      this.avis,
-      this.etoile,
-      this.prix,
-      this.features,
-      this.pictures,
-      this.pays,
-      this.ville,
-      this.user,
-      this.telephone,
-      this.imageProp,
-      this.email,
-      this.hentree,
-      this.hsortie,
-      this.equipement,
-      this.address,
-      this.favoris});
+  ApartmentModel({
+    this.id,
+    this.description,
+    this.nom,
+    this.image,
+    this.avis,
+    this.etoile,
+    this.prix,
+    this.features,
+    this.pictures,
+    this.pays,
+    this.ville,
+    this.user,
+    this.telephone,
+    this.imageProp,
+    this.email,
+    this.hentree,
+    this.hsortie,
+    this.equipement,
+    this.address,
+    this.favoris,
+  });
 
   static ApartmentModel fromMap(Map<String, dynamic> map, String documentId) {
     if (map == null) return null;

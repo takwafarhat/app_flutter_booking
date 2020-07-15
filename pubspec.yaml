@@ -83,6 +83,7 @@ flutter:
     - assets/2.jpg
     - assets/
     - assets/amir.jpg
+    - assets/icons/products/
 
   fonts:
     - family: Merriweather

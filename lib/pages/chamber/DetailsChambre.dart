@@ -1,7 +1,10 @@
+import 'package:app_flat/core/const.dart';
 import 'package:app_flat/models/chambre.dart';
-import 'package:app_flat/pages/chamber/ReserverChamber.dart';
+import 'package:app_flat/pages/chamber/bottom_sheet.dart';
+import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_indicator/flutter_slider_indicator.dart';
+import 'package:intl/intl.dart';
 
 class DetailsChambre extends StatefulWidget {
   final Chambre myChambers;
@@ -41,7 +44,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
         _buildWidgetIndicator(context),
         _detailsChambre(context),
       ]),
-      floatingActionButton: new FloatingActionButton.extended(
+      /*floatingActionButton: new FloatingActionButton.extended(
         onPressed: () {
           Navigator.push(
             context,
@@ -50,10 +53,15 @@ class _DetailsChambrState extends State<DetailsChambre> {
             ),
           );
         },
-        label: const Text("Selectionner"),
-        backgroundColor: Colors.teal[300],
+        label: const Text(""),
+        icon: Icon(
+          Icons.add,
+          color: Colors.teal,
+        ),
+        backgroundColor: Colors.white,
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
+      */
     );
   }
 
@@ -102,6 +110,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
   }
 
   Widget _detailsChambre(BuildContext context) {
+    var _theme = Theme.of(context);
     return DraggableScrollableSheet(
         expand: true,
         initialChildSize: 0.65,
@@ -109,7 +118,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
           return SingleChildScrollView(
             child: Container(
               width: MediaQuery.of(context).size.width,
-              height: MediaQuery.of(context).size.height,
+              height: MediaQuery.of(context).size.height * .7,
               decoration: BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.only(
@@ -121,7 +130,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
                 children: <Widget>[
                   Padding(
                     padding:
-                        const EdgeInsets.only(top: 20, left: 20, bottom: 15),
+                        const EdgeInsets.only(top: 20, left: 20, bottom: 10),
                     child: Row(
                       children: <Widget>[
                         Text(
@@ -135,7 +144,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(top: 15),
+                    padding: const EdgeInsets.only(top: 10),
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
@@ -218,7 +227,29 @@ class _DetailsChambrState extends State<DetailsChambre> {
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(left: 15, bottom: 10, top: 15),
+                    padding: const EdgeInsets.only(
+                      top: 20,
+                    ),
+                    child: RaisedButton(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(35.0)),
+                      child: const Text('Selectionner',
+                          style: TextStyle(color: Colors.teal)),
+                      onPressed: () {
+                        showModalBottomSheet(
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(35.0)),
+                          context: context,
+                          builder: (BuildContext context) {
+                            return ChamberBottomSheet();
+                          },
+                        );
+                      },
+                      color: Colors.white,
+                    ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(left: 15, top: 10),
                       child: Row(
                         children: <Widget>[
                           Text('Les equippements : ',
@@ -229,6 +260,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
                               )),
                         ],
                       )),
+
                   Padding(
                     padding: EdgeInsets.only(left: 15, bottom: 10, top: 15),
                     child: Row(
@@ -241,15 +273,15 @@ class _DetailsChambrState extends State<DetailsChambre> {
                               initialPage: 0,
                               viewportFraction: 0.2,
                             ),
-                            itemExtent: 70,
+                            itemExtent: 60,
                             scrollDirection: Axis.horizontal,
                             itemCount: widget.myChambers.equipement.length,
                             itemBuilder: (context, index) {
                               return Image.network(
                                 widget.myChambers.equipement[index],
                                 fit: BoxFit.contain,
-                                width: 100,
-                                height: 100,
+                                width: 70,
+                                height: 70,
                               );
                             },
                           ),
@@ -257,23 +289,21 @@ class _DetailsChambrState extends State<DetailsChambre> {
                       ],
                     ),
                   ),
-                  /*Padding(
-                    padding: const EdgeInsets.only(top: 40, left: 200),
-                    child: RaisedButton(
-                      child: Text("Selectionner"),
-                      color: Colors.teal[300],
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Reserverchamber(),
-                          ),
-                        );
-                      },
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(30.0)),
-                    ),
-                  ),*/
+
+                  // child: RaisedButton(
+                  //   child: Text("Selectionner"),
+                  //   color: Colors.teal[300],
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder: (context) => Reserverchamber(),
+                  //       ),
+                  //     );
+                  //   },
+                  //   shape: RoundedRectangleBorder(
+                  //       borderRadius: BorderRadius.circular(30.0)),
+                  // ),
                 ],
               ),
             ),
