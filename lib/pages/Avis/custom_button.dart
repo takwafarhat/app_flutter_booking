@@ -13,7 +13,7 @@ class OpenFlutterButton extends StatelessWidget {
   final double iconSize;
   final Color backgroundColor;
   final Color textColor;
-  final Color borderColor;
+  //final Color borderColor;
 
   OpenFlutterButton({
     Key key,
@@ -22,9 +22,9 @@ class OpenFlutterButton extends StatelessWidget {
     @required this.title,
     @required this.onPressed,
     this.icon,
-    this.backgroundColor = Colors.red,
-    this.textColor = Colors.white,
-    this.borderColor = Colors.red,
+    this.backgroundColor = Colors.white,
+    this.textColor = Colors.teal,
+    //this.borderColor = Colors.teal,
     this.iconSize = 18.0,
   }) : super(key: key);
 
@@ -33,19 +33,19 @@ class OpenFlutterButton extends StatelessWidget {
     var _theme = Theme.of(context);
     EdgeInsetsGeometry edgeInsets = EdgeInsets.all(0);
     if (width == null || height == null) {
-      edgeInsets = EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0);
+      edgeInsets = EdgeInsets.symmetric(horizontal: 20.0, vertical: 8.0);
     }
     return Padding(
       padding: edgeInsets,
       child: InkWell(
         onTap: onPressed,
         child: Container(
-          width: width,
+          //width: width,
           height: height,
           padding: edgeInsets,
           decoration: BoxDecoration(
               color: backgroundColor,
-              border: Border.all(color: borderColor),
+              //border: Border.all(color: borderColor),
               borderRadius: BorderRadius.circular(34.0),
               boxShadow: [
                 BoxShadow(

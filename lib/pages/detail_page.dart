@@ -80,7 +80,8 @@ class _DetailPageState extends State<DetailPage> {
     return DraggableScrollableSheet(
         expand: true,
         initialChildSize: 0.7,
-        maxChildSize: 1.0,
+        maxChildSize: 1,
+        minChildSize: 0.5,
         builder: (context, controller) {
           return SingleChildScrollView(
             child: Container(
@@ -718,7 +719,6 @@ class _DetailPageState extends State<DetailPage> {
             child: ApartmentModelReviewRatingScreen(
           avisList: mesAvis,
         )),
-        //   _buildRatingBar(mesAvis: mesAvis),
       ],
 
       // floatingActionButton: FloatingActionButton.extended(
@@ -898,66 +898,5 @@ class _DetailPageState extends State<DetailPage> {
 
   Widget _buildMap() {
     return Container();
-  }
-}
-
-class _buildRatingBar extends StatelessWidget {
-  const _buildRatingBar({
-    Key key,
-    @required this.mesAvis,
-  }) : super(key: key);
-
-  final List<Avis> mesAvis;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 200,
-      child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: mesAvis.length != 0
-            ? ListView.builder(
-                physics: BouncingScrollPhysics(),
-                itemCount: mesAvis.length,
-                itemBuilder: (context, index) {
-                  return Align(
-                    child: Row(
-                      children: <Widget>[
-                        //Text(mesAvis[index].etoile)
-
-                        RatingBar(
-                          onRatingUpdate: (v) {},
-                          initialRating: mesAvis[index].etoile,
-                          itemSize: 15,
-                          allowHalfRating: true,
-                          itemBuilder: (context, index) => Icon(
-                            Icons.star,
-                            color: Colors.amber,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                })
-            : Container(),
-      ),
-    );
-  }
-}
-
-class _buildtextAvis extends StatelessWidget {
-  const _buildtextAvis({
-    Key key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Text("Classement & Avis: ",
-        style: TextStyle(
-          fontWeight: FontWeight.bold,
-          fontSize: 20,
-          color: Colors.black,
-          height: 1.5,
-        ));
   }
 }

@@ -1,4 +1,5 @@
 import 'package:app_flat/core/const.dart';
+import 'package:app_flat/pages/chamber/ReserverChamber.dart';
 import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -102,7 +103,7 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
                                 style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
-                                    color: Colors.black),
+                                    color: Colors.teal),
                               ),
                               const SizedBox(
                                 height: 8,
@@ -147,13 +148,12 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: <Widget>[
-                              Text(
-                                'Check-out',
-                                style: TextStyle(
+                              Text('Check-out',
+                                  style: TextStyle(
                                     fontWeight: FontWeight.w400,
                                     fontSize: 16,
-                                    color: Colors.black.withOpacity(0.8)),
-                              ),
+                                    color: Colors.teal,
+                                  )),
                               const SizedBox(
                                 height: 8,
                               ),
@@ -326,6 +326,19 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
             ),
           ),
         ],
+      ),
+      RaisedButton(
+        child: Text("Reserver"),
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(18.0),
+            side: BorderSide(color: Colors.teal)),
+        color: Colors.teal[100],
+        onPressed: () {
+          Navigator.of(context)
+              .push(MaterialPageRoute<Null>(builder: (BuildContext context) {
+            return Reserverchamber();
+          }));
+        },
       ),
     ]);
   }

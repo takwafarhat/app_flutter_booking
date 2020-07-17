@@ -44,7 +44,8 @@ class OpenFlutterCheckbox extends StatelessWidget {
                     title,
                     style: _theme.textTheme.display1.copyWith(
                         fontWeight: FontWeight.bold,
-                        color: _theme.primaryColor),
+                        color: Colors.black,
+                        fontSize: 15),
                   ),
                 ),
               ],

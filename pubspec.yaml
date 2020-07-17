@@ -84,6 +84,7 @@ flutter:
     - assets/
     - assets/amir.jpg
     - assets/icons/products/
+    - assets/images/checkout/mastercard.png
 
   fonts:
     - family: Merriweather

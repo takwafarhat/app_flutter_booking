@@ -1,4 +1,6 @@
 import 'package:app_flat/pages/Avis/Avis.dart';
+import 'package:app_flat/pages/Avis/custom_button.dart';
+import 'package:app_flat/pages/Avis/custom_checkbox.dart';
 import 'package:app_flat/pages/Avis/product_review.dart';
 import 'package:app_flat/pages/Avis/product_review_item.dart';
 import 'package:app_flat/pages/Avis/rating_summary.dart';
@@ -47,39 +49,39 @@ class ApartmentModelReviewRatingScreenState
     );
   }
 
-  // Widget _buildFooter(BuildContext context) {
-  //   return Stack(
-  //     children: <Widget>[
-  //       Positioned(
-  //         height: 100.0,
-  //         bottom: 0,
-  //         left: 0,
-  //         right: 0,
-  //         child: Container(
-  //           decoration: BoxDecoration(
-  //             gradient: LinearGradient(
-  //               colors: [
-  //                 Colors.white,
-  //                 Colors.white12,
-  //               ],
-  //               begin: Alignment.bottomCenter,
-  //               end: Alignment.topCenter,
-  //             ),
-  //           ),
-  //         ),
-  //       ),
-  //       Container(
-  //         alignment: Alignment.bottomRight,
-  //         child: OpenFlutterButton(
-  //           title: 'Write a review',
-  //           icon: Icons.edit,
-  //           width: MediaQuery.of(context).size.width * 0.5,
-  //           onPressed: () => {},
-  //         ),
-  //       ),
-  //     ],
-  //   );
-  // }
+//   Widget _buildFooter(BuildContext context) {
+//     return Stack(
+//       children: <Widget>[
+//         Positioned(
+//           height: 80.0,
+//           bottom: 0,
+//           left: 0,
+//           right: 0,
+//           child: Container(
+//             decoration: BoxDecoration(
+//               gradient: LinearGradient(
+//                 colors: [
+//                   Colors.white,
+//                   Colors.white12,
+//                 ],
+//                 begin: Alignment.bottomCenter,
+//                 end: Alignment.topCenter,
+//               ),
+//             ),
+//           ),
+//         ),
+//         Container(
+//           alignment: Alignment.bottomRight,
+//           child: OpenFlutterButton(
+//             title: 'Rédiger un avis',
+//             icon: Icons.edit,
+//             width: MediaQuery.of(context).size.width * 0.5,
+//             onPressed: () => {},
+//           ),
+//         ),
+//       ],
+//     );
+//   }
 }
 
 class ApartmentModelReviewWrapper extends StatefulWidget {
@@ -87,9 +89,8 @@ class ApartmentModelReviewWrapper extends StatefulWidget {
   final summaryAndFilterIndex = 2;
 
   const ApartmentModelReviewWrapper({
-    Key key,
     this.avisList,
-  }) : super(key: key);
+  });
 
   @override
   State<StatefulWidget> createState() {
@@ -99,26 +100,158 @@ class ApartmentModelReviewWrapper extends StatefulWidget {
 
 class ApartmentModelReviewWrapperState
     extends State<ApartmentModelReviewWrapper> {
-  List<ApartmentModelReview> comments = [];
-  int reviewCount = 5;
-  bool withPhotos = false;
+  int reviewCount;
 
+  bool withPhotos = false;
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
+    return Padding(
+      padding: const EdgeInsets.all(20.0),
       child: Column(
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
-          _buildRatingSummary(context),
-          Column(
-            mainAxisSize: MainAxisSize.max,
-            children: _getApartmentModelReview()
-                .map((e) => _buildApartmentModelReviewItem(e))
-                .toList(),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: <Widget>[
+                Text("Classement et avis ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: Colors.black,
+                      fontSize: 18,
+                      height: 1.5,
+                    )),
+                Padding(
+                  padding: const EdgeInsets.only(left: 100),
+                  child: InkWell(
+                    child: Text('Tout voir'),
+                    onTap: () {
+                      showDialog(
+                        context: context,
+                        builder: (BuildContext context) {
+                          return getReviews(context);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
           ),
+          _buildRatingSummary(context, widget.avisList.length),
+
+          // Divider(
+          //   height: 1,
+          // ),
+          // Padding(
+          //   padding: const EdgeInsets.only(top: 10.0, bottom: 15),
+          //   child: new Expanded(
+          //     child: new Row(
+          //       children: <Widget>[
+          //         Text(
+          //           "Toucher pour noter : \t",
+          //           style: TextStyle(fontSize: 15.0),
+          //         ),
+          //         SmoothStarRating(
+          //           size: 30,
+          //           color: Colors.amber,
+          //           borderColor: Colors.grey,
+          //           allowHalfRating: true,
+          //         )
+          //       ],
+          //     ),
+          //   ),
+          // ),
+          // new Expanded(
+          //   child: new Container(
+          //       child: new TextFormField(
+          //     maxLines: 5,
+          //     decoration: new InputDecoration(
+          //       border: OutlineInputBorder(),
+          //       filled: false,
+          //       contentPadding: new EdgeInsets.only(
+          //           left: 10.0, top: 80.0, bottom: 20.0, right: 10.0),
+          //       hintText: ' Ajouter votre avis',
+          //       hintStyle: new TextStyle(
+          //         color: Colors.grey.shade500,
+          //         fontSize: 12.0,
+          //         fontFamily: 'helvetica_neue_light',
+          //       ),
+          //     ),
+          //   )),
+          //   flex: 2,
+          // ),
         ],
       ),
     );
+  }
+
+  Widget getReviews(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[Colors.blueGrey[50], Colors.teal[200]])),
+        ),
+        title: Text(
+          "Classement et avis",
+          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        ),
+      ),
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            children: <Widget>[
+              _buildRatingSummary(context, widget.avisList.length),
+              //_buildTitleCommentAndFilter(context),
+              Column(
+                mainAxisSize: MainAxisSize.max,
+                children: _getApartmentModelReview()
+                    .map((e) => _buildApartmentModelReviewItem(e))
+                    .toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTitleCommentAndFilter(BuildContext context) {
+    if (reviewCount > 0) {
+      return Padding(
+        padding: const EdgeInsets.only(
+          bottom: 8.0,
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              '${widget.avisList.length} reviews',
+              style: Theme.of(context).textTheme.subtitle1,
+            ),
+            Expanded(
+              child: OpenFlutterCheckbox(
+                width: MediaQuery.of(context).size.width * 0.5,
+                mainAxisAlignment: MainAxisAlignment.end,
+                checked: withPhotos,
+                title: 'with photos',
+                onTap: (value) {},
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return SizedBox();
   }
 }
 
@@ -133,57 +266,25 @@ class ApartmentModelReviewWrapperState
 //   }
 // }
 
-Widget _buildRatingSummary(BuildContext context) {
-  var ratingCount = 5;
-  var averageRating = 3.0;
+Widget _buildRatingSummary(BuildContext context, int listLength) {
+  var averageRating = 5.0;
+
   return Padding(
-    padding: const EdgeInsets.symmetric(
-      vertical: 8.0,
-    ),
+    padding: const EdgeInsets.only(top: 10.0, bottom: 20),
     child: OpenFlutterRatingSummary(
-      barColor: Theme.of(context).accentColor,
-      ratingQuantity: ratingCount,
+      barColor: Colors.red[900],
+      ratingQuantity: listLength,
       rating: averageRating,
       ratingDetail: [
-        StarQuantity(quantity: 2, rating: 5),
-        StarQuantity(rating: 4, quantity: 1),
-        StarQuantity(quantity: 3, rating: 3),
-        StarQuantity(rating: 0, quantity: 1),
+        StarQuantity(rating: 5, quantity: 2),
+        StarQuantity(rating: 4, quantity: 4),
+        StarQuantity(rating: 3, quantity: 3),
+        StarQuantity(rating: 2, quantity: 1),
+        StarQuantity(rating: 1, quantity: 4),
       ],
     ),
   );
 }
-
-// Widget _buildTitleCommentAndFilter(BuildContext context) {
-//   if (reviewCount > 0) {
-//     return Padding(
-//       padding: const EdgeInsets.only(
-//         bottom: 8.0,
-//       ),
-//       child: Row(
-//         mainAxisAlignment: MainAxisAlignment.start,
-//         crossAxisAlignment: CrossAxisAlignment.center,
-//         children: <Widget>[
-//           Text(
-//             '$reviewCount reviews',
-//             style: Theme.of(context).textTheme.subtitle,
-//           ),
-//           Expanded(
-//             child: OpenFlutterCheckbox(
-//               width: MediaQuery.of(context).size.width * 0.5,
-//               mainAxisAlignment: MainAxisAlignment.end,
-//               checked: withPhotos,
-//               title: 'with photos',
-//               onTap: (value) {},
-//             ),
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-
-//   return SizedBox();
-// }
 
 Widget _buildApartmentModelReviewItem(ApartmentModelReview x) {
   return Padding(
@@ -305,17 +406,6 @@ List<ApartmentModelReview> _getApartmentModelReview() {
       isHelpful: false,
     ),
   ];
-}
-
-Padding _buildIndicator() {
-  return Padding(
-    padding: const EdgeInsets.only(
-      top: 8.0,
-    ),
-    child: Center(
-      child: CircularProgressIndicator(),
-    ),
-  );
 }
 
 // Widget _buildEmptyCommentsView() {
