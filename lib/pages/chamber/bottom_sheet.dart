@@ -64,20 +64,25 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
             borderRadius: const BorderRadius.all(Radius.circular(24.0)),
             onTap: () {},
             child: Column(children: <Widget>[
-              Row(
-                children: <Widget>[
-                  Container(
-                    color: Colors.transparent,
-                    child: Padding(
-                      padding: const EdgeInsets.only(left: 15, top: 20),
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 20),
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 10),
                       child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: <Widget>[
-                          new Row(
-                            // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          Row(
                             children: <Widget>[
-                              Icon(Icons.person),
+                              Icon(
+                                Icons.person,
+                                color: Colors.teal,
+                              ),
+                              Text('    \t'),
+                              new Text('$_nadult',
+                                  style: new TextStyle(fontSize: 15.0)),
                               Text(
                                 '\t Adultes',
                                 style: TextStyle(
@@ -85,127 +90,185 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
                                     fontSize: 16,
                                     color: Colors.black.withOpacity(0.8)),
                               ),
-                              Text('\t       \t'),
-                              new FlatButton(
-                                onPressed: minusADULT,
-                                child: new Icon(
-                                  Icons.expand_more,
-                                  color: Colors.black,
-                                  size: 15,
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              InkWell(
+                                  child: Container(
+                                    width: 28,
+                                    height: 28,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0),
+                                        ),
+                                        border: Border.all(
+                                            color:
+                                                Colors.grey.withOpacity(0.2)),
+                                      ),
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.teal,
+                                        size: 28,
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: minusADULT),
+                              Text('\t  \t'),
+                              InkWell(
+                                child: Container(
+                                  width: 28,
+                                  height: 28,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: Colors.white,
+                                      borderRadius: const BorderRadius.all(
+                                        Radius.circular(8.0),
+                                      ),
+                                      border: Border.all(
+                                          color: Colors.grey.withOpacity(0.2)),
+                                    ),
+                                    child: Icon(
+                                      Icons.add,
+                                      color: Colors.teal,
+                                      size: 28,
+                                    ),
+                                  ),
                                 ),
-                                // backgroundColor: Colors.white,
-                                // mini: true,
-                              ),
-                              new Text('$_nadult',
-                                  style: new TextStyle(fontSize: 15.0)),
-                              new FlatButton(
-                                onPressed: addADULT,
-                                child: new Icon(Icons.expand_less,
-                                    size: 15, color: Colors.black),
-                                // backgroundColor: Colors.white,
-                                // mini: true,
+                                onTap: addADULT,
                               ),
                             ],
                           ),
                         ],
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
               const Divider(
                 height: 1,
               ),
-              Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15, top: 20),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        new Row(
-                          // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                          children: <Widget>[
-                            Icon(Icons.person),
-                            Text(
-                              '\t Enfants',
-                              style: TextStyle(
-                                  fontWeight: FontWeight.w400,
-                                  fontSize: 16,
-                                  color: Colors.black.withOpacity(0.8)),
-                            ),
-                            Text('\t            \t'),
-                            new FlatButton(
-                              onPressed: minusEnf,
-                              child: new Icon(
-                                Icons.expand_more,
-                                color: Colors.black,
-                                size: 15,
+              Padding(
+                padding: const EdgeInsets.only(left: 20.0, top: 20),
+                child: new Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Padding(
+                      padding: const EdgeInsets.only(left: 15, top: 10),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              Icon(
+                                Icons.person,
+                                color: Colors.teal,
                               ),
-                              // backgroundColor: Colors.white,
-                              // mini: true,
-                            ),
-                            new Text('$_nEnf',
-                                style: new TextStyle(fontSize: 15.0)),
-                            new FlatButton(
-                              onPressed: addENF,
-                              child: new Icon(Icons.expand_less,
-                                  size: 15, color: Colors.black),
-                              // backgroundColor: Colors.white,
-                              // mini: true,
-                            ),
-                          ],
-                        ),
-                      ],
+                              Text('    \t'),
+                              new Text('$_nadult',
+                                  style: new TextStyle(fontSize: 15.0)),
+                              Text(
+                                '\t Enfants',
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w400,
+                                    fontSize: 16,
+                                    color: Colors.black.withOpacity(0.8)),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                    Padding(
+                      padding: const EdgeInsets.only(right: 20),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          Row(
+                            children: <Widget>[
+                              InkWell(
+                                  child: Container(
+                                    width: 28,
+                                    height: 28,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0),
+                                        ),
+                                        border: Border.all(
+                                            color:
+                                                Colors.grey.withOpacity(0.2)),
+                                      ),
+                                      child: Icon(
+                                        Icons.remove,
+                                        color: Colors.teal,
+                                        size: 28,
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: minusEnf),
+                              Text('\t  \t'),
+                              InkWell(
+                                  child: Container(
+                                    width: 28,
+                                    height: 28,
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius: const BorderRadius.all(
+                                          Radius.circular(8.0),
+                                        ),
+                                        border: Border.all(
+                                            color:
+                                                Colors.grey.withOpacity(0.2)),
+                                      ),
+                                      child: Icon(
+                                        Icons.add,
+                                        color: Colors.teal,
+                                        size: 28,
+                                      ),
+                                    ),
+                                  ),
+                                  onTap: addENF),
+                            ],
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              const Divider(
+                height: 1,
               ),
               Padding(
-                padding: const EdgeInsets.only(
-                    left: 16, right: 16, bottom: 16, top: 8),
-                child: Container(
-                  height: 48,
-                  decoration: BoxDecoration(
-                    color: HotelAppTheme.buildLightTheme().primaryColor,
-                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
-                    boxShadow: <BoxShadow>[
-                      BoxShadow(
-                        color: Colors.grey.withOpacity(0.6),
-                        blurRadius: 8,
-                        offset: const Offset(4, 4),
-                      ),
-                    ],
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius:
-                          const BorderRadius.all(Radius.circular(24.0)),
-                      highlightColor: Colors.transparent,
-                      onTap: () {
-                        try {
-                          // animationController.reverse().then((f) {
-
-                          // });
-                          widget.onApplyClick(_ncham, _nadult, _nEnf);
-                          Navigator.pop(context);
-                        } catch (_) {}
-                      },
-                      child: Center(
-                        child: Text(
-                          'selectionner',
-                          style: TextStyle(
-                              fontWeight: FontWeight.w500,
-                              fontSize: 18,
-                              color: Colors.white),
+                padding: const EdgeInsets.only(left: 150, top: 15),
+                child: InkWell(
+                  child: Row(
+                    children: <Widget>[
+                      Container(
+                        child: Icon(
+                          Icons.add,
+                          color: Colors.teal,
+                          size: 18,
                         ),
                       ),
-                    ),
+                      Text('Ajouter une chambre'),
+                    ],
                   ),
                 ),
-              )
+              ),
             ]),
           ),
         ),
@@ -267,3 +330,48 @@ class AppSizes {
   static const tile_width = 148.0;
   static const tile_height = 276.0;
 }
+/*     Padding(
+                padding: const EdgeInsets.only(
+                    left: 16, right: 16, bottom: 16, top: 8),
+                child: Container(
+                  height: 48,
+                  decoration: BoxDecoration(
+                    color: HotelAppTheme.buildLightTheme().primaryColor,
+                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.6),
+                        blurRadius: 8,
+                        offset: const Offset(4, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(24.0)),
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        try {
+                          // animationController.reverse().then((f) {
+
+                          // });
+                          widget.onApplyClick(_ncham, _nadult, _nEnf);
+                          Navigator.pop(context);
+                        } catch (_) {}
+                      },
+                      child: Center(
+                        child: Text(
+                          'selectionner',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+           */
