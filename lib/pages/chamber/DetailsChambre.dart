@@ -2,6 +2,7 @@ import 'package:app_flat/core/const.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/bottom_sheet.dart';
 import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
+import 'package:app_flat/pages/chamber/hotel_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_indicator/flutter_slider_indicator.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +18,9 @@ class _DetailsChambrState extends State<DetailsChambre> {
   var _pageController = PageController();
   var _currentIndex = 0;
   var _maxLines = 3;
-
+  int _ncham = 0;
+  int _nadult = 0;
+  int _nEnf = 0;
   @override
   Widget build(BuildContext context) {
     _pageController.addListener(() {
@@ -228,24 +231,41 @@ class _DetailsChambrState extends State<DetailsChambre> {
                   ),
                   Padding(
                     padding: const EdgeInsets.only(
-                      top: 20,
-                    ),
-                    child: RaisedButton(
-                      shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(35.0)),
-                      child: const Text('Selectionner',
-                          style: TextStyle(color: Colors.teal)),
-                      onPressed: () {
-                        showModalBottomSheet(
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(35.0)),
-                          context: context,
-                          builder: (BuildContext context) {
-                            return ChamberBottomSheet();
+                        left: 20, right: 20, bottom: 16, top: 8),
+                    child: Container(
+                      height: 40,
+                      decoration: BoxDecoration(
+                        color: Colors.teal[200],
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(24.0)),
+                        boxShadow: <BoxShadow>[
+                          BoxShadow(
+                            color: Colors.grey.withOpacity(0.6),
+                            blurRadius: 8,
+                            offset: const Offset(4, 4),
+                          ),
+                        ],
+                      ),
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius:
+                              const BorderRadius.all(Radius.circular(24.0)),
+                          highlightColor: Colors.transparent,
+                          onTap: () {
+                            showDemoDialog1(context: context);
                           },
-                        );
-                      },
-                      color: Colors.white,
+                          child: Center(
+                            child: Text(
+                              'Selectionner',
+                              style: TextStyle(
+                                  fontWeight: FontWeight.w500,
+                                  fontSize: 18,
+                                  color: Colors.white),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                   Padding(
@@ -309,5 +329,21 @@ class _DetailsChambrState extends State<DetailsChambre> {
             ),
           );
         });
+  }
+
+  void showDemoDialog1({BuildContext context}) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => ChamberBottomSheet(
+        onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
+          setState(() {
+            _ncham = nbCham;
+            _nadult = nbAdlt;
+            _nEnf = nbEnf;
+          });
+        },
+        onCancelClick: () {},
+      ),
+    );
   }
 }

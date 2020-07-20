@@ -1,6 +1,8 @@
 import 'package:app_flat/Login/profile.dart';
 import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/pages/ajout_bien.dart';
+import 'package:app_flat/pages/chamber/bottom_sheet.dart';
+import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
 import 'package:app_flat/pages/filtre/filters_screen.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +11,7 @@ import 'package:app_flat/pages/detail_page.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:app_flat/pages/filtre/hotel_app_theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
@@ -20,7 +23,11 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   StorageReference photosReference =
       FirebaseStorage.instance.ref().child("hotels");
-
+  DateTime startDate = DateTime.now();
+  DateTime endDate = DateTime.now().add(const Duration(days: 3));
+  int _ncham = 0;
+  int _nadult = 0;
+  int _nEnf = 0;
   //int _currentIndex = 0;
   final tabs = [
     Center(child: Text("Home")),
@@ -114,6 +121,44 @@ class _HomePageState extends State<HomePage> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  void showDemoDialog({BuildContext context}) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => CalendarPopupView(
+        barrierDismissible: true,
+        minimumDate: DateTime.now(),
+        //  maximumDate: DateTime(DateTime.now().year, DateTime.now().month, DateTime.now().day + 10),
+        initialEndDate: endDate,
+        initialStartDate: startDate,
+        onApplyClick: (DateTime startData, DateTime endData) {
+          setState(() {
+            if (startData != null && endData != null) {
+              startDate = startData;
+              endDate = endData;
+            }
+          });
+        },
+        onCancelClick: () {},
+      ),
+    );
+  }
+
+  void showDemoDialog1({BuildContext context}) {
+    showDialog<dynamic>(
+      context: context,
+      builder: (BuildContext context) => ChamberBottomSheet(
+        onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
+          setState(() {
+            _ncham = nbCham;
+            _nadult = nbAdlt;
+            _nEnf = nbEnf;
+          });
+        },
+        onCancelClick: () {},
       ),
     );
   }
