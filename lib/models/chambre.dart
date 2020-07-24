@@ -13,18 +13,19 @@ class Chambre {
   final int ratingCount;
   final double averageRating;
 
-  Chambre(
-      {this.prix,
-      this.nomHotel,
-      this.photo,
-      this.type,
-      this.idhotel,
-      this.id,
-      this.equipement,
-      this.pictures,
-      this.description,
-      this.ratingCount,
-      this.averageRating});
+  Chambre({
+    this.prix,
+    this.nomHotel,
+    this.photo,
+    this.type,
+    this.idhotel,
+    this.id,
+    this.equipement,
+    this.pictures,
+    this.description,
+    this.ratingCount,
+    this.averageRating,
+  });
 
   static Chambre fromMap(Map<String, dynamic> map, String documentId) {
     if (map == null) return null;

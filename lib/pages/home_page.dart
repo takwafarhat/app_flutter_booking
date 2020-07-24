@@ -147,21 +147,21 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  void showDemoDialog1({BuildContext context}) {
-    showDialog<dynamic>(
-      context: context,
-      builder: (BuildContext context) => ChamberBottomSheet(
-        onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
-          setState(() {
-            _ncham = nbCham;
-            _nadult = nbAdlt;
-            _nEnf = nbEnf;
-          });
-        },
-        onCancelClick: () {},
-      ),
-    );
-  }
+  // void showDemoDialog1({BuildContext context}) {
+  //   showDialog<dynamic>(
+  //     context: context,
+  //     builder: (BuildContext context) => ChamberBottomSheet(
+  //       onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
+  //         setState(() {
+  //           _ncham = nbCham;
+  //           _nadult = nbAdlt;
+  //           _nEnf = nbEnf;
+  //         });
+  //       },
+  //       onCancelClick: () {},
+  //     ),
+  //   );
+  // }
 
   Widget getSearchBarUI() {
     return Padding(

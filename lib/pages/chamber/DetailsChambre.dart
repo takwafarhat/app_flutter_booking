@@ -1,15 +1,13 @@
-import 'package:app_flat/core/const.dart';
+import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/bottom_sheet.dart';
-import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
-import 'package:app_flat/pages/chamber/hotel_app_theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_indicator/flutter_slider_indicator.dart';
-import 'package:intl/intl.dart';
 
 class DetailsChambre extends StatefulWidget {
   final Chambre myChambers;
-  DetailsChambre({@required this.myChambers});
+  final String hotelID;
+  DetailsChambre({@required this.myChambers, this.hotelID});
   @override
   _DetailsChambrState createState() => _DetailsChambrState();
 }
@@ -113,7 +111,6 @@ class _DetailsChambrState extends State<DetailsChambre> {
   }
 
   Widget _detailsChambre(BuildContext context) {
-    var _theme = Theme.of(context);
     return DraggableScrollableSheet(
         expand: true,
         initialChildSize: 0.65,
@@ -335,6 +332,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
     showDialog<dynamic>(
       context: context,
       builder: (BuildContext context) => ChamberBottomSheet(
+        myHotel: widget.hotelID,
         onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
           setState(() {
             _ncham = nbCham;
