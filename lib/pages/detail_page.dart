@@ -2,6 +2,8 @@
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/Avis/Avis.dart';
 import 'package:app_flat/pages/Avis/product_review_and_rating_screen.dart';
+import 'package:app_flat/pages/Equipement.dart';
+import 'package:app_flat/pages/Map/my_map.dart';
 import 'package:app_flat/pages/chamber/DetailsChambre.dart';
 import 'package:app_flat/utils/database.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -26,20 +28,25 @@ class _DetailPageState extends State<DetailPage> {
   bool isFav;
   List<Chambre> myChambers = [];
   List<Avis> mesAvis = [];
+  List<Equipement> myEquipments = [];
 
   @override
   void initState() {
     super.initState();
+    print('myHotel address' + widget.myHotel.address);
+
+    print('myHotel geopoint' + widget.myHotel.position.latitude.toString());
     getChambers(widget.myHotel.id);
     isFav = widget.myHotel.favoris;
     getAvis(widget.myHotel.id);
+    getEquipement(widget.myHotel.id);
   }
 
   Future<void> getChambers(hid) async {
     await DatabaseService().getChamberByHotelId(hid).then((value) {
       value.forEach((element) {
         myChambers.add(element);
-        print(element.equipement.toString());
+        // print(element.equipement.toString());
       });
       setState(() {});
     });
@@ -49,6 +56,16 @@ class _DetailPageState extends State<DetailPage> {
     await DatabaseService().getavisByHotelId(hid).then((value) {
       value.forEach((element) {
         mesAvis.add(element);
+      });
+      setState(() {});
+    });
+  }
+
+  Future<void> getEquipement(hid) async {
+    await DatabaseService().getEquipementByHotelId(hid).then((value) {
+      value.forEach((element) {
+        print(element.nom.toString());
+        myEquipments.add(element);
       });
       setState(() {});
     });
@@ -199,7 +216,7 @@ class _DetailPageState extends State<DetailPage> {
                     padding: EdgeInsets.only(top: 10),
                     child: Container(
                       width: MediaQuery.of(context).size.width,
-                      height: MediaQuery.of(context).size.height,
+                      height: MediaQuery.of(context).size.height / 2,
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.only(
@@ -236,7 +253,7 @@ class _DetailPageState extends State<DetailPage> {
                             Expanded(
                               child: TabBarView(
                                 children: [
-                                  _buildDetails(),
+                                  SingleChildScrollView(child: _buildDetails()),
                                   _buildAvis(),
                                   _buildChambre(),
                                   _buildMap()
@@ -425,7 +442,7 @@ class _DetailPageState extends State<DetailPage> {
       ),
     );
     return Container(
-      height: MediaQuery.of(context).size.height,
+      // height: MediaQuery.of(context).size.height,
       alignment: Alignment.topLeft,
       child: Column(
         mainAxisSize: MainAxisSize.max,
@@ -607,25 +624,31 @@ class _DetailPageState extends State<DetailPage> {
                 )),
           ),
           const SizedBox(height: 8),
-          Container(
-            height: 50,
-            width: MediaQuery.of(context).size.width,
-            child: ListView.builder(
-              controller: PageController(
-                initialPage: 0,
-                viewportFraction: 0.2,
+
+          GestureDetector(
+            onTap: () {
+              print("le nb des equip " + myEquipments.length.toString());
+            },
+            child: Container(
+              height: 50,
+              width: MediaQuery.of(context).size.width,
+              child: ListView.builder(
+                controller: PageController(
+                  initialPage: 0,
+                  viewportFraction: 0.2,
+                ),
+                itemExtent: 70,
+                scrollDirection: Axis.horizontal,
+                itemCount: myEquipments.length,
+                itemBuilder: (context, index) {
+                  return Image.network(
+                    myEquipments[index].photo,
+                    fit: BoxFit.contain,
+                    width: 150,
+                    height: 150,
+                  );
+                },
               ),
-              itemExtent: 70,
-              scrollDirection: Axis.horizontal,
-              itemCount: widget.myHotel.equipement.length,
-              itemBuilder: (context, index) {
-                return Image.network(
-                  widget.myHotel.equipement[index],
-                  fit: BoxFit.contain,
-                  width: 150,
-                  height: 150,
-                );
-              },
             ),
           )
         ],
@@ -897,6 +920,8 @@ class _DetailPageState extends State<DetailPage> {
   }
 
   Widget _buildMap() {
-    return Container();
+    return MyMap(
+      hotelPosition: widget.myHotel.position,
+    );
   }
 }

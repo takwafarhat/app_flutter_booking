@@ -7,9 +7,9 @@
   },
   "client": [{
     "client_info": {
-      "mobilesdk_app_id": "1:697386592680:android:bac1400bb87c11c966959d",
+      "mobilesdk_app_id": "1:697386592680:android:30987cab5495cb7c66959d",
       "android_client_info": {
-        "package_name": "com.edsbrains.app_flat"
+        "package_name": "com.example.map"
       }
     },
     "oauth_client": [{
@@ -17,7 +17,7 @@
       "client_type": 3
     }],
     "api_key": [{
-      "current_key": "AIzaSyCApJbnN8E9-MQ035M6bh-QAE4V6unWWeY"
+      "current_key": "AIzaSyBwN_KRDeL7OvpNORnCL_VtJtabTLlwTjI"
     }],
     "services": {
       "appinvite_service": {

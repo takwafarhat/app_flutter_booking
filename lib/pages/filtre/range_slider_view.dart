@@ -36,9 +36,17 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                   ),
                   Container(
                     width: 54,
-                    child: Text(
-                      '\$${_values.start.round()}',
-                      textAlign: TextAlign.center,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.euro_symbol,
+                          size: 13,
+                        ),
+                        Text(
+                          '${_values.start.round()}',
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(
@@ -55,9 +63,17 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                   ),
                   Container(
                     width: 54,
-                    child: Text(
-                      '\$${_values.end.round()}',
-                      textAlign: TextAlign.center,
+                    child: Row(
+                      children: <Widget>[
+                        Icon(
+                          Icons.euro_symbol,
+                          size: 13,
+                        ),
+                        Text(
+                          '${_values.end.round()}',
+                          textAlign: TextAlign.center,
+                        ),
+                      ],
                     ),
                   ),
                   Expanded(

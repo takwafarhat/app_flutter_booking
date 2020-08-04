@@ -1,4 +1,3 @@
-import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/hotel_app_theme.dart';
 import 'package:app_flat/utils/database.dart';
@@ -59,9 +58,37 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
         ],
       ));
     }
-    return Center(
-        child: Scaffold(
-      backgroundColor: Colors.transparent,
+    return Scaffold(
+      //backgroundColor: Colors.transparent,
+      appBar: AppBar(
+        flexibleSpace: Container(
+          decoration: BoxDecoration(
+              gradient: LinearGradient(
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                  colors: <Color>[Colors.blueGrey[50], Colors.teal[200]])),
+        ),
+        title: Text(
+          "Client d'hotel et chambre ",
+          style: TextStyle(color: Colors.black87, fontWeight: FontWeight.bold),
+        ),
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(
+              Icons.save,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              Navigator.push<dynamic>(
+                context,
+                MaterialPageRoute<dynamic>(
+                    builder: (BuildContext context) => null,
+                    fullscreenDialog: true),
+              );
+            },
+          ),
+        ],
+      ),
       body: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Container(
@@ -96,7 +123,15 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
                         onTap: () {
                           setState(() {
                             print(myChambers.length);
-                            if (x < myChambers.length) x++;
+                            if (x < myChambers.length)
+                              x++;
+                            else if (x >= myChambers.length)
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return BeautifulAlertDialog();
+                                },
+                              );
                           });
                         },
                       ),
@@ -108,7 +143,7 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
           ),
         ),
       ),
-    ));
+    );
   }
 }
 
@@ -129,7 +164,7 @@ class _AjouterChambreState extends State<AjouterChambre> {
   Widget build(BuildContext context) {
     return Column(children: <Widget>[
       Padding(
-        padding: const EdgeInsets.only(left: 20.0, top: 20),
+        padding: const EdgeInsets.only(left: 20.0, top: 10),
         child: Row(
           children: <Widget>[
             Text(' CHAMBRE ${widget.nbCH}'),
@@ -371,6 +406,7 @@ class AppSizes {
   static const tile_width = 148.0;
   static const tile_height = 276.0;
 }
+
 /*     Padding(
                 padding: const EdgeInsets.only(
                     left: 16, right: 16, bottom: 16, top: 8),
@@ -416,3 +452,73 @@ class AppSizes {
                 ),
               ),
            */
+class BeautifulAlertDialog extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Dialog(
+        elevation: 0,
+        backgroundColor: Colors.transparent,
+        child: Container(
+          padding: EdgeInsets.only(right: 16.0),
+          height: 150,
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(75),
+                  bottomLeft: Radius.circular(75),
+                  topRight: Radius.circular(10),
+                  bottomRight: Radius.circular(10))),
+          child: Row(
+            children: <Widget>[
+              SizedBox(width: 20.0),
+              CircleAvatar(
+                radius: 50,
+                backgroundColor: Colors.grey.shade200,
+                child: Image.asset(
+                  'assets/exclamation-mark.png',
+                  width: 70,
+                ),
+              ),
+              SizedBox(width: 20.0),
+              Expanded(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    Text(
+                      "Alert!",
+                      style: Theme.of(context).textTheme.title,
+                    ),
+                    SizedBox(height: 20.0),
+                    Flexible(
+                      child: Text(
+                          "le nombre max de chambre disponible est dépassé !!"),
+                    ),
+                    SizedBox(height: 10.0),
+                    Row(
+                      children: <Widget>[
+                        Expanded(
+                          child: RaisedButton(
+                            child: Text("Exit"),
+                            color: Colors.red,
+                            colorBrightness: Brightness.dark,
+                            onPressed: () {
+                              Navigator.pop(context);
+                            },
+                            shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(20.0)),
+                          ),
+                        ),
+                      ],
+                    )
+                  ],
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

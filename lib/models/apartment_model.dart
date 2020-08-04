@@ -21,6 +21,7 @@ class ApartmentModel {
   final String id;
   final String address;
   final bool favoris;
+  final GeoPoint position;
 
   ApartmentModel({
     this.id,
@@ -43,6 +44,7 @@ class ApartmentModel {
     this.equipement,
     this.address,
     this.favoris,
+    this.position,
   });
 
   static ApartmentModel fromMap(Map<String, dynamic> map, String documentId) {
@@ -68,7 +70,8 @@ class ApartmentModel {
         equipement: map['equipement'],
         id: documentId,
         address: map['Adresse'],
-        favoris: map['favoris']);
+        favoris: map['favoris'],
+        position: map['position']);
   }
 }
 

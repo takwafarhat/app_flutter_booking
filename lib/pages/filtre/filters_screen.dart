@@ -11,8 +11,8 @@ class FiltersScreen extends StatefulWidget {
 }
 
 class _FiltersScreenState extends State<FiltersScreen> {
-  List<PopularFilterListData> popularFilterListData =
-      PopularFilterListData.popularFList;
+  List<PopularFilterListData> equipmentFilterListData =
+      PopularFilterListData.equipementFList;
   List<PopularFilterListData> accomodationListData =
       PopularFilterListData.accomodationList;
 
@@ -37,10 +37,6 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       height: 1,
                     ),
                     popularFilter(),
-                    const Divider(
-                      height: 1,
-                    ),
-                    distanceViewUI(),
                     const Divider(
                       height: 1,
                     ),
@@ -74,11 +70,31 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () {
-                      Navigator.pop(context);
+                      print("les equipements sélectionnées sont :");
+                      print('prix=' +
+                          'min= ' +
+                          _values.start.toString() +
+                          ' max = ' +
+                          _values.end.toString());
+                      print(equipmentFilterListData.length.toString());
+                      equipmentFilterListData.forEach((element) {
+                        // print('equipement : ' +
+                        //     'name: ' +
+                        //     element.titleTxt +
+                        //     '\t' +
+                        //     element.isSelected.toString());
+
+                        final List<PopularFilterListData>
+                            equipmentFilterListDataSelected = [];
+                        if (element.isSelected == true) {
+                          equipmentFilterListDataSelected.add(element);
+                          print("les elements" + element.titleTxt);
+                        }
+                      });
                     },
                     child: Center(
                       child: Text(
-                        'Apply',
+                        'Rechercher un hôtel',
                         style: TextStyle(
                             fontWeight: FontWeight.w500,
                             fontSize: 18,
@@ -104,7 +120,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
-            'Type of Accommodation',
+            "Type de l'hébergement",
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
@@ -208,7 +224,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
     }
   }
 
-  Widget distanceViewUI() {
+  /* Widget distanceViewUI() {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -236,7 +252,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         ),
       ],
     );
-  }
+  }*/
 
   Widget popularFilter() {
     return Column(
@@ -247,7 +263,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
           padding:
               const EdgeInsets.only(left: 16, right: 16, top: 16, bottom: 8),
           child: Text(
-            'Popular filters',
+            'Equippement',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
@@ -270,13 +286,16 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   List<Widget> getPList() {
     final List<Widget> noList = <Widget>[];
+
     int count = 0;
     const int columnCount = 2;
-    for (int i = 0; i < popularFilterListData.length / columnCount; i++) {
+    for (int i = 0; i < equipmentFilterListData.length / columnCount; i++) {
       final List<Widget> listUI = <Widget>[];
+
       for (int i = 0; i < columnCount; i++) {
         try {
-          final PopularFilterListData date = popularFilterListData[count];
+          final PopularFilterListData date = equipmentFilterListData[count];
+
           listUI.add(Expanded(
             child: Row(
               children: <Widget>[
@@ -338,7 +357,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
         Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            'Price (for 1 night)',
+            'Prix (pour 1 nuit)',
             textAlign: TextAlign.left,
             style: TextStyle(
                 color: Colors.grey,
@@ -398,7 +417,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
             Expanded(
               child: Center(
                 child: Text(
-                  'Filters',
+                  'Filtres',
                   style: TextStyle(
                     fontWeight: FontWeight.w600,
                     fontSize: 22,

@@ -1,5 +1,6 @@
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/Avis/Avis.dart';
+import 'package:app_flat/pages/Equipement.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../models/apartment_model.dart';
@@ -80,7 +81,8 @@ class DatabaseService {
           equipement: doc.data['equipement'] ?? [],
           id: doc.documentID,
           address: doc.data['Adresse'],
-          favoris: doc.data['favoris']);
+          favoris: doc.data['favoris'],
+          position: doc.data['position']);
     }).toList();
   }
 
@@ -146,6 +148,36 @@ class DatabaseService {
       List<Avis> list = postDocuments.documents
           .map((snapshot) => Avis.fromMap(snapshot.data, snapshot.documentID))
           .where((mappedItem) => mappedItem.idhotel == idhotel)
+          .toList();
+      return list;
+    } else
+      return [];
+  }
+
+  final CollectionReference equipementCollection =
+      Firestore.instance.collection('Equipement');
+
+  List<Equipement> equipementListFromSnapshot(QuerySnapshot snapshot) {
+    return snapshot.documents.map((doc) {
+      Equipement(
+        idHotel: doc.data['idHotel'] ?? '',
+        nom: doc.data['nom'] ?? '',
+        photo: doc.data['photo'] ?? '',
+      );
+    }).toList();
+  }
+
+  Stream<List<Equipement>> get equipement {
+    return equipementCollection.snapshots().map(equipementListFromSnapshot);
+  }
+
+  Future<List<Equipement>> getEquipementByHotelId(String idHotel) async {
+    var postDocuments = await equipementCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      List<Equipement> list = postDocuments.documents
+          .map((snapshot) =>
+              Equipement.fromMap(snapshot.data, snapshot.documentID))
+          .where((mappedItem) => mappedItem.idHotel == idHotel)
           .toList();
       return list;
     } else

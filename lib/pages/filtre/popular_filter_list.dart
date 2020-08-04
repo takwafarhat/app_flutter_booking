@@ -7,52 +7,52 @@ class PopularFilterListData {
   String titleTxt;
   bool isSelected;
 
-  static List<PopularFilterListData> popularFList = <PopularFilterListData>[
+  static List<PopularFilterListData> equipementFList = <PopularFilterListData>[
     PopularFilterListData(
-      titleTxt: 'Free Breakfast',
+      titleTxt: 'Bar',
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Free Parking',
+      titleTxt: 'Aquapark',
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Pool',
+      titleTxt: 'Beach',
       isSelected: true,
     ),
     PopularFilterListData(
-      titleTxt: 'Pet Friendly',
+      titleTxt: 'Golf',
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Free wifi',
+      titleTxt: 'Piscine',
+      isSelected: false,
+    ),
+    PopularFilterListData(
+      titleTxt: 'Wifi',
+      isSelected: false,
+    ),
+    PopularFilterListData(
+      titleTxt: 'Tennis',
       isSelected: false,
     ),
   ];
 
   static List<PopularFilterListData> accomodationList = [
     PopularFilterListData(
-      titleTxt: 'All',
+      titleTxt: 'tous',
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Apartment',
+      titleTxt: 'Appartement',
       isSelected: false,
     ),
     PopularFilterListData(
-      titleTxt: 'Home',
+      titleTxt: "Maison d'hôte",
       isSelected: true,
     ),
     PopularFilterListData(
-      titleTxt: 'Villa',
-      isSelected: false,
-    ),
-    PopularFilterListData(
       titleTxt: 'Hotel',
-      isSelected: false,
-    ),
-    PopularFilterListData(
-      titleTxt: 'Resort',
       isSelected: false,
     ),
   ];

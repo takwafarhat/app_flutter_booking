@@ -147,22 +147,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  // void showDemoDialog1({BuildContext context}) {
-  //   showDialog<dynamic>(
-  //     context: context,
-  //     builder: (BuildContext context) => ChamberBottomSheet(
-  //       onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
-  //         setState(() {
-  //           _ncham = nbCham;
-  //           _nadult = nbAdlt;
-  //           _nEnf = nbEnf;
-  //         });
-  //       },
-  //       onCancelClick: () {},
-  //     ),
-  //   );
-  // }
-
   Widget getSearchBarUI() {
     return Padding(
       padding: const EdgeInsets.only(left: 10, right: 10),
@@ -389,39 +373,53 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                  width: 25,
-                                  height: 25,
-                                  decoration: BoxDecoration(
-                                    image: DecorationImage(
-                                      image: ExactAssetImage("assets/1.jpg"),
-                                    ),
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(50),
-                                    ),
-                                  ),
-                                ),
-                                Container(
-                                  width: 25,
-                                  height: 25,
-                                  decoration: BoxDecoration(
-                                    color: Colors.black26,
-                                    borderRadius: BorderRadius.all(
-                                      Radius.circular(50),
-                                    ),
-                                  ),
-                                  child: Center(
-                                    child: Text(
-                                      "23+",
-                                      style: TextStyle(fontSize: 10),
-                                    ),
-                                  ),
-                                )
-                              ],
-                            ),
-                            /*Wrap(
+                          ],
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              )
+            : Container(
+                child: CircularProgressIndicator(),
+              );
+      },
+    );
+  }
+}
+// Row(
+//   children: <Widget>[
+//     Container(
+//       width: 25,
+//       height: 25,
+//       decoration: BoxDecoration(
+//         image: DecorationImage(
+//           image: ExactAssetImage("assets/1.jpg"),
+//         ),
+//         borderRadius: BorderRadius.all(
+//           Radius.circular(50),
+//         ),
+//       ),
+//     ),
+//     Container(
+//       width: 25,
+//       height: 25,
+//       decoration: BoxDecoration(
+//         color: Colors.black26,
+//         borderRadius: BorderRadius.all(
+//           Radius.circular(50),
+//         ),
+//       ),
+//       child: Center(
+//         child: Text(
+//           "23+",
+//           style: TextStyle(fontSize: 10),
+//         ),
+//       ),
+//     )
+//   ],
+// ),
+/*Wrap(
                               children: <Widget>[
                                 ...myHotels[index].features.map(
                                   (feature) {
@@ -440,17 +438,18 @@ class _HomePageState extends State<HomePage> {
                                 ),
                               ],
                             ),*/
-                          ],
-                        ),
-                      ),
-                    )
-                  ],
-                ),
-              )
-            : Container(
-                child: CircularProgressIndicator(),
-              );
-      },
-    );
-  }
-}
+// void showDemoDialog1({BuildContext context}) {
+//   showDialog<dynamic>(
+//     context: context,
+//     builder: (BuildContext context) => ChamberBottomSheet(
+//       onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
+//         setState(() {
+//           _ncham = nbCham;
+//           _nadult = nbAdlt;
+//           _nEnf = nbEnf;
+//         });
+//       },
+//       onCancelClick: () {},
+//     ),
+//   );
+// }

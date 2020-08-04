@@ -1,4 +1,3 @@
-import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/bottom_sheet.dart';
 import 'package:flutter/material.dart';
