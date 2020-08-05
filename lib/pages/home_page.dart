@@ -1,9 +1,9 @@
 import 'package:app_flat/Login/profile.dart';
 import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/pages/ajout_bien.dart';
-import 'package:app_flat/pages/chamber/bottom_sheet.dart';
 import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
 import 'package:app_flat/pages/filtre/filters_screen.dart';
+import 'package:app_flat/pages/filtre/popular_filter_list.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:app_flat/utils/database.dart';
@@ -11,10 +11,13 @@ import 'package:app_flat/pages/detail_page.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:app_flat/pages/filtre/hotel_app_theme.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:intl/intl.dart';
 
 class HomePage extends StatefulWidget {
   static String id = 'HomePage';
+  final RangeValues minMaxPrixFilter;
+  final List<PopularFilterListData> listnomEquip;
+  final List<PopularFilterListData> listnomHeberg;
+  HomePage({this.minMaxPrixFilter, this.listnomEquip, this.listnomHeberg});
 
   @override
   _HomePageState createState() => _HomePageState();
@@ -25,10 +28,8 @@ class _HomePageState extends State<HomePage> {
       FirebaseStorage.instance.ref().child("hotels");
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 3));
-  int _ncham = 0;
-  int _nadult = 0;
-  int _nEnf = 0;
-  //int _currentIndex = 0;
+  List<ApartmentModel> myHotels = [];
+
   final tabs = [
     Center(child: Text("Home")),
     Center(child: Text("filter_list")),
@@ -46,6 +47,30 @@ class _HomePageState extends State<HomePage> {
       default:
         return this._bodyHome(context);
     }
+  }
+
+  void initState() {
+    super.initState();
+    if (widget.minMaxPrixFilter != null) {
+      getHotels(widget.minMaxPrixFilter);
+    }
+    print(widget.minMaxPrixFilter.start);
+    print(widget.minMaxPrixFilter.end);
+  }
+
+  // RangeValues _values = const RangeValues(0, 1000);
+
+  Future<void> getHotels(RangeValues minMaxPrixFilter) async {
+    await DatabaseService().getHotels().then((value) {
+      value.forEach((element) {
+        if ((element.prix >= minMaxPrixFilter.start) &&
+            (element.prix <= minMaxPrixFilter.end)) {
+          myHotels.add(element);
+          print(element.prix.toString());
+        }
+        setState(() {});
+      });
+    });
   }
 
   @override
@@ -95,30 +120,49 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           getSearchBarUI(),
           Expanded(
-            child: StreamBuilder(
-              stream: DatabaseService().hotels,
-              builder: (context, snapshot) {
-                List<ApartmentModel> myHotels = snapshot.data;
-                return ListView.builder(
-                  physics: BouncingScrollPhysics(),
-                  itemCount: myHotels != null ? myHotels.length : 0,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        Navigator.of(context).push(
-                          MaterialPageRoute(
-                            builder: (context) => DetailPage(
-                              myHotel: myHotels[index],
+            child: widget.minMaxPrixFilter == null
+                ? StreamBuilder(
+                    stream: DatabaseService().hotels,
+                    builder: (context, snapshot) {
+                      return ListView.builder(
+                        physics: BouncingScrollPhysics(),
+                        itemCount:
+                            snapshot.data != null ? snapshot.data.length : 0,
+                        itemBuilder: (context, index) {
+                          return GestureDetector(
+                            onTap: () {
+                              Navigator.of(context).push(
+                                MaterialPageRoute(
+                                  builder: (context) => DetailPage(
+                                    myHotel: myHotels[index],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: _buildItem(context, myHotels[index]),
+                          );
+                        },
+                      );
+                    },
+                  )
+                : ListView.builder(
+                    physics: BouncingScrollPhysics(),
+                    itemCount: myHotels.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => DetailPage(
+                                myHotel: myHotels[index],
+                              ),
                             ),
-                          ),
-                        );
-                      },
-                      child: _buildItem(context, index),
-                    );
-                  },
-                );
-              },
-            ),
+                          );
+                        },
+                        child: _buildItem(context, myHotels[index]),
+                      );
+                    },
+                  ),
           ),
         ],
       ),
@@ -220,170 +264,152 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-  Widget _buildItem(BuildContext context, int index) {
-    return StreamBuilder(
-      stream: DatabaseService().hotels,
-      builder: (context, snapshot) {
-        List<ApartmentModel> myHotels = snapshot.data;
-
-        return myHotels != null
-            ? Container(
-                padding: EdgeInsets.all(12),
-                height: 250,
-                child: Stack(
-                  children: <Widget>[
-                    Align(
-                        alignment: Alignment.centerRight,
-                        child: Container(
-                          width: MediaQuery.of(context).size.width * .5,
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(20),
-                            ),
-                            image: new DecorationImage(
-                              image: NetworkImage(myHotels[index].image),
-                            ),
-                            boxShadow: [
-                              BoxShadow(
-                                  blurRadius: 7,
-                                  spreadRadius: 1,
-                                  color: Colors.black12)
-                            ],
-                          ),
-                          child: Stack(fit: StackFit.expand, children: <Widget>[
-                            Container(
-                              decoration: BoxDecoration(
-                                gradient: LinearGradient(
-                                  colors: [
-                                    Colors.transparent,
-                                    Colors.transparent,
-                                    Colors.black87,
-                                  ],
-                                  begin: Alignment.topCenter,
-                                  end: Alignment.bottomCenter,
-                                ),
-                                borderRadius: BorderRadius.all(
-                                  Radius.circular(20),
-                                ),
-                              ),
-                            ),
-                            Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Padding(
-                                padding: EdgeInsets.only(
-                                  bottom: 12,
-                                  left: 40,
-                                  right: 12,
-                                ),
-                                child: Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Container(
-                                        width:
-                                            MediaQuery.of(context).size.width *
-                                                .25,
-                                        child: Text(myHotels[index].nom,
-                                            style: TextStyle(
-                                              fontWeight: FontWeight.bold,
-                                              color: Colors.white,
-                                            )))
-                                  ],
-                                ),
-                              ),
-                            )
-                          ]),
-                        )),
-                    Align(
-                      alignment: Alignment.centerLeft,
-                      child: Container(
-                        width: MediaQuery.of(context).size.width * .45,
-                        height: 200,
-                        padding: EdgeInsets.all(12),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(20),
-                          ),
-                          boxShadow: [
-                            BoxShadow(
-                              blurRadius: 7,
-                              spreadRadius: 1,
-                              color: Colors.black12,
-                            )
-                          ],
-                        ),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              children: <Widget>[
-                                Text(
-                                  "A partir de ",
-                                  style: TextStyle(
-                                    fontSize: 13,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Icon(
-                                  Icons.euro_symbol,
-                                  size: 15,
-                                ),
-                                Text(
-                                  "${myHotels[index].prix.toInt()}",
-                                  style: TextStyle(
-                                    fontSize: 15,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                                Text(
-                                  "/nuit",
-                                  style: TextStyle(
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            Text(
-                              "${myHotels[index].address}",
-                              style: TextStyle(
-                                color: Colors.black38,
-                                fontSize: 13,
-                              ),
-                            ),
-                            Row(
-                              children: <Widget>[
-                                RatingBar(
-                                  onRatingUpdate: (v) {},
-                                  initialRating:
-                                      myHotels[index].etoile.toDouble(),
-                                  itemSize: 12,
-                                  itemBuilder: (context, index) => Icon(
-                                    Icons.star,
-                                    color: Colors.amber,
-                                  ),
-                                ),
-                                Text(
-                                  "${myHotels[index].avis.length.toInt()} reviews",
-                                  style: TextStyle(
-                                      color: Colors.black87, fontSize: 10),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    )
+  Widget _buildItem(BuildContext context, ApartmentModel hotel) {
+    return Container(
+      padding: EdgeInsets.all(12),
+      height: 250,
+      child: Stack(
+        children: <Widget>[
+          Align(
+              alignment: Alignment.centerRight,
+              child: Container(
+                width: MediaQuery.of(context).size.width * .5,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(20),
+                  ),
+                  image: new DecorationImage(
+                    image: NetworkImage(hotel.image),
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                        blurRadius: 7, spreadRadius: 1, color: Colors.black12)
                   ],
                 ),
-              )
-            : Container(
-                child: CircularProgressIndicator(),
-              );
-      },
+                child: Stack(fit: StackFit.expand, children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.transparent,
+                          Colors.transparent,
+                          Colors.black87,
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
+                      ),
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(20),
+                      ),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment.bottomLeft,
+                    child: Padding(
+                      padding: EdgeInsets.only(
+                        bottom: 12,
+                        left: 40,
+                        right: 12,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Container(
+                              width: MediaQuery.of(context).size.width * .25,
+                              child: Text(hotel.nom,
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  )))
+                        ],
+                      ),
+                    ),
+                  )
+                ]),
+              )),
+          Align(
+            alignment: Alignment.centerLeft,
+            child: Container(
+              width: MediaQuery.of(context).size.width * .45,
+              height: 200,
+              padding: EdgeInsets.all(12),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(20),
+                ),
+                boxShadow: [
+                  BoxShadow(
+                    blurRadius: 7,
+                    spreadRadius: 1,
+                    color: Colors.black12,
+                  )
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: <Widget>[
+                      Text(
+                        "A partir de ",
+                        style: TextStyle(
+                          fontSize: 13,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Icon(
+                        Icons.euro_symbol,
+                        size: 15,
+                      ),
+                      Text(
+                        "${hotel.prix.toInt()}",
+                        style: TextStyle(
+                          fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        "/nuit",
+                        style: TextStyle(
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ],
+                  ),
+                  Text(
+                    "${hotel.address}",
+                    style: TextStyle(
+                      color: Colors.black38,
+                      fontSize: 13,
+                    ),
+                  ),
+                  Row(
+                    children: <Widget>[
+                      RatingBar(
+                        onRatingUpdate: (v) {},
+                        initialRating: hotel.etoile.toDouble(),
+                        itemSize: 12,
+                        itemBuilder: (context, index) => Icon(
+                          Icons.star,
+                          color: Colors.amber,
+                        ),
+                      ),
+                      Text(
+                        "${hotel.avis.length.toInt()} reviews",
+                        style: TextStyle(color: Colors.black87, fontSize: 10),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

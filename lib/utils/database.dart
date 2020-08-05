@@ -2,6 +2,7 @@ import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/Avis/Avis.dart';
 import 'package:app_flat/pages/Equipement.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
 
 import '../models/apartment_model.dart';
 
@@ -84,6 +85,18 @@ class DatabaseService {
           favoris: doc.data['favoris'],
           position: doc.data['position']);
     }).toList();
+  }
+
+  Future<List<ApartmentModel>> getHotels() async {
+    var postDocuments = await hotelCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      List<ApartmentModel> list = postDocuments.documents
+          .map((snapshot) =>
+              ApartmentModel.fromMap(snapshot.data, snapshot.documentID))
+          .toList();
+      return list;
+    } else
+      return [];
   }
 
   Stream<List<ApartmentModel>> get hotels {

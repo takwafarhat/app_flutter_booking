@@ -1,7 +1,7 @@
+import 'package:app_flat/pages/home_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'range_slider_view.dart';
-import 'slider_view.dart';
 import 'hotel_app_theme.dart';
 import 'package:app_flat/pages/filtre/popular_filter_list.dart';
 
@@ -13,11 +13,10 @@ class FiltersScreen extends StatefulWidget {
 class _FiltersScreenState extends State<FiltersScreen> {
   List<PopularFilterListData> equipmentFilterListData =
       PopularFilterListData.equipementFList;
-  List<PopularFilterListData> accomodationListData =
-      PopularFilterListData.accomodationList;
+  List<PopularFilterListData> hebergemnetListData =
+      PopularFilterListData.hebergemnetList;
 
-  RangeValues _values = const RangeValues(100, 600);
-  double distValue = 50.0;
+  RangeValues _values = const RangeValues(0, 200);
 
   @override
   Widget build(BuildContext context) {
@@ -76,21 +75,35 @@ class _FiltersScreenState extends State<FiltersScreen> {
                           _values.start.toString() +
                           ' max = ' +
                           _values.end.toString());
+
                       print(equipmentFilterListData.length.toString());
                       equipmentFilterListData.forEach((element) {
-                        // print('equipement : ' +
-                        //     'name: ' +
-                        //     element.titleTxt +
-                        //     '\t' +
-                        //     element.isSelected.toString());
-
                         final List<PopularFilterListData>
                             equipmentFilterListDataSelected = [];
                         if (element.isSelected == true) {
                           equipmentFilterListDataSelected.add(element);
-                          print("les elements" + element.titleTxt);
+                          print("les elements \t " + element.titleTxt);
                         }
                       });
+
+                      hebergemnetListData.forEach((d) {
+                        final List<PopularFilterListData>
+                            hebergementFilterListDataSelected = [];
+                        if (d.isSelected == true) {
+                          hebergementFilterListDataSelected.add(d);
+                          print("les hébergements sélèctionnées sont \t" +
+                              d.titleTxt);
+                        }
+                      });
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HomePage(
+                            minMaxPrixFilter: _values,
+                            listnomEquip: equipmentFilterListData,
+                            listnomHeberg: hebergemnetListData,
+                          ),
+                        ),
+                      );
                     },
                     child: Center(
                       child: Text(
@@ -143,8 +156,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   List<Widget> getAccomodationListUI() {
     final List<Widget> noList = <Widget>[];
-    for (int i = 0; i < accomodationListData.length; i++) {
-      final PopularFilterListData date = accomodationListData[i];
+    for (int i = 0; i < hebergemnetListData.length; i++) {
+      final PopularFilterListData date = hebergemnetListData[i];
       noList.add(
         Material(
           color: Colors.transparent,
@@ -193,33 +206,33 @@ class _FiltersScreenState extends State<FiltersScreen> {
 
   void checkAppPosition(int index) {
     if (index == 0) {
-      if (accomodationListData[0].isSelected) {
-        accomodationListData.forEach((d) {
+      if (hebergemnetListData[0].isSelected) {
+        hebergemnetListData.forEach((d) {
           d.isSelected = false;
         });
       } else {
-        accomodationListData.forEach((d) {
+        hebergemnetListData.forEach((d) {
           d.isSelected = true;
         });
       }
     } else {
-      accomodationListData[index].isSelected =
-          !accomodationListData[index].isSelected;
+      hebergemnetListData[index].isSelected =
+          !hebergemnetListData[index].isSelected;
 
       int count = 0;
-      for (int i = 0; i < accomodationListData.length; i++) {
+      for (int i = 0; i < hebergemnetListData.length; i++) {
         if (i != 0) {
-          final PopularFilterListData data = accomodationListData[i];
+          final PopularFilterListData data = hebergemnetListData[i];
           if (data.isSelected) {
             count += 1;
           }
         }
       }
 
-      if (count == accomodationListData.length - 1) {
-        accomodationListData[0].isSelected = true;
+      if (count == hebergemnetListData.length - 1) {
+        hebergemnetListData[0].isSelected = true;
       } else {
-        accomodationListData[0].isSelected = false;
+        hebergemnetListData[0].isSelected = false;
       }
     }
   }
