@@ -57,9 +57,10 @@ class _HomePageState extends State<HomePage> {
     // if (widget.minMaxPrixFilter != null) {
     //   getHotels(widget.minMaxPrixFilter);
     // }
-    if (widget.listnomEquip != null) {
-      getHotelsByEquipement(widget.listnomEquip);
-    }
+    // if (widget.listnomEquip != null) {
+    //   getHotelsByEquipement(widget.listnomEquip);
+    // }
+    getHotelByType(widget.listnomHeberg);
   }
 
   // RangeValues _values = const RangeValues(0, 1000);
@@ -103,6 +104,25 @@ class _HomePageState extends State<HomePage> {
           print("le nom " + value.first.nom);
           setState(() {});
         });
+      });
+    });
+  }
+
+  Future<void> getHotelByType(List<PopularFilterListData> listnomHeberg) async {
+    print('inside getHotelsBytype');
+    listnomHeberg.forEach((d) {
+      print("Selected  " + d.titleTxt);
+    });
+    await DatabaseService().getHotels().then((value) {
+      value.forEach((element) {
+        listnomHeberg.forEach((filteredElement) {
+          if (element.typeHotel.toUpperCase() ==
+              filteredElement.titleTxt.toUpperCase()) {
+            print(" filteredElement.titleTxt \t" + element.typeHotel);
+            myHotels.add(element);
+          }
+        });
+        setState(() {});
       });
     });
   }

@@ -12,51 +12,6 @@ class DatabaseService {
   final CollectionReference hotelCollection =
       Firestore.instance.collection('hotels');
 
-  // Future<void> updateUserData(
-  //   String description,
-  //   String nom,
-  //   String image,
-  //   List<String> avis,
-  //   int etoile,
-  //   double prix,
-  //   List<String> typedechambre,
-  //   List<String> features,
-  //   List pictures,
-  //   int nbCommentaires,
-  //   String ville,
-  //   String pays,
-  //   int telephone,
-  //   String user,
-  //   String email,
-  //   String imageProp,
-  //   Timestamp hentree,
-  //   Timestamp hsortie,
-  //   List<String> equipement,
-  //   String id,
-  // ) async {
-  //   return await hotelCollection.document().setData({
-  //     'Description': description,
-  //     'Nom': nom,
-  //     'Image': image,
-  //     'avis': avis,
-  //     'etoile': etoile,
-  //     'prix': prix,
-  //     'typedechambre': typedechambre,
-  //     'features': features,
-  //     'pictures': pictures,
-  //     'nbCommentaires': nbCommentaires,
-  //     'ville': ville,
-  //     'pays': pays,
-  //     'telephone': telephone,
-  //     'user': user,
-  //     'email': email,
-  //     'imageProp': imageProp,
-  //     'hentree': hentree,
-  //     'hsortie': hsortie,
-  //     'equipement': equipement,
-  //   });
-  // }
-
   List<ApartmentModel> _hotelListFromSnapshot(QuerySnapshot snapshot) {
     return snapshot.documents.map((doc) {
       //print(doc.data);
@@ -79,7 +34,8 @@ class DatabaseService {
           id: doc.documentID,
           address: doc.data['Adresse'],
           favoris: doc.data['favoris'],
-          position: doc.data['position']);
+          position: doc.data['position'],
+          typeHotel: doc.data['typeHotel'] ?? '');
     }).toList();
   }
 

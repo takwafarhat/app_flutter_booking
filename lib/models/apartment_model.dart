@@ -7,7 +7,7 @@ class ApartmentModel {
 
   final int etoile;
   final int prix;
-
+  final String typeHotel;
   final List pictures;
   final String pays;
   final String ville;
@@ -23,27 +23,27 @@ class ApartmentModel {
   final bool favoris;
   final GeoPoint position;
 
-  ApartmentModel({
-    this.id,
-    this.description,
-    this.nom,
-    this.image,
-    this.etoile,
-    this.prix,
-    this.pictures,
-    this.pays,
-    this.ville,
-    this.user,
-    this.telephone,
-    this.imageProp,
-    this.email,
-    this.hentree,
-    this.hsortie,
-    this.equipement,
-    this.address,
-    this.favoris,
-    this.position,
-  });
+  ApartmentModel(
+      {this.id,
+      this.description,
+      this.nom,
+      this.image,
+      this.etoile,
+      this.prix,
+      this.pictures,
+      this.pays,
+      this.ville,
+      this.user,
+      this.telephone,
+      this.imageProp,
+      this.email,
+      this.hentree,
+      this.hsortie,
+      this.equipement,
+      this.address,
+      this.favoris,
+      this.position,
+      this.typeHotel});
 
   static ApartmentModel fromMap(Map<String, dynamic> map, String documentId) {
     if (map == null) return null;
@@ -67,7 +67,8 @@ class ApartmentModel {
         id: documentId,
         address: map['Adresse'],
         favoris: map['favoris'],
-        position: map['position']);
+        position: map['position'],
+        typeHotel: map['typeHotel']);
   }
 }
 
