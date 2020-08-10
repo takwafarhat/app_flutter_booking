@@ -4,10 +4,10 @@ class ApartmentModel {
   final String description;
   final String nom;
   final String image;
-  final List avis;
+
   final int etoile;
   final int prix;
-  final List features;
+
   final List pictures;
   final String pays;
   final String ville;
@@ -28,10 +28,8 @@ class ApartmentModel {
     this.description,
     this.nom,
     this.image,
-    this.avis,
     this.etoile,
     this.prix,
-    this.features,
     this.pictures,
     this.pays,
     this.ville,
@@ -54,10 +52,8 @@ class ApartmentModel {
         nom: map['Nom'],
         description: map['Description'],
         image: map['Image'],
-        avis: map['avis'],
         etoile: map['etoile'],
         prix: map['prix'],
-        features: map['features'],
         pictures: map['pictures'],
         ville: map['ville'],
         pays: map['pays'],

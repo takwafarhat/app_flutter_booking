@@ -1,5 +1,6 @@
 import 'package:app_flat/Login/profile.dart';
 import 'package:app_flat/models/apartment_model.dart';
+import 'package:app_flat/pages/Equipement.dart';
 import 'package:app_flat/pages/ajout_bien.dart';
 import 'package:app_flat/pages/chamber/calendar_popup_view.dart';
 import 'package:app_flat/pages/filtre/filters_screen.dart';
@@ -29,6 +30,7 @@ class _HomePageState extends State<HomePage> {
   DateTime startDate = DateTime.now();
   DateTime endDate = DateTime.now().add(const Duration(days: 3));
   List<ApartmentModel> myHotels = [];
+  List<Equipement> myEquipments = [];
 
   final tabs = [
     Center(child: Text("Home")),
@@ -51,11 +53,13 @@ class _HomePageState extends State<HomePage> {
 
   void initState() {
     super.initState();
-    if (widget.minMaxPrixFilter != null) {
-      getHotels(widget.minMaxPrixFilter);
+    // print(" listed" + widget.listnomEquip.toString());
+    // if (widget.minMaxPrixFilter != null) {
+    //   getHotels(widget.minMaxPrixFilter);
+    // }
+    if (widget.listnomEquip != null) {
+      getHotelsByEquipement(widget.listnomEquip);
     }
-    print(widget.minMaxPrixFilter.start);
-    print(widget.minMaxPrixFilter.end);
   }
 
   // RangeValues _values = const RangeValues(0, 1000);
@@ -69,6 +73,36 @@ class _HomePageState extends State<HomePage> {
           print(element.prix.toString());
         }
         setState(() {});
+      });
+    });
+  }
+
+  Future<void> getHotelsByEquipement(
+      List<PopularFilterListData> listnomEquip) async {
+    print('inside getHotelsByEquipement');
+    listnomEquip.forEach((d) {
+      print("Selected  " + d.titleTxt);
+    });
+    List<String> hotelsIds = [];
+
+    await DatabaseService().getEquipements().then((value) {
+      value.forEach((element) {
+        listnomEquip.forEach((filteredElement) {
+          if (element.nom.toUpperCase() ==
+              filteredElement.titleTxt.toUpperCase()) {
+            hotelsIds.add(element.idHotel);
+            print('hotel  = ' + element.idHotel);
+          }
+        });
+      });
+      print('hotelsIds  = ' + hotelsIds.toString());
+
+      hotelsIds.forEach((element) {
+        DatabaseService().getHotelById(element).then((value) {
+          myHotels.add(value.first);
+          print("le nom " + value.first.nom);
+          setState(() {});
+        });
       });
     });
   }
@@ -134,12 +168,12 @@ class _HomePageState extends State<HomePage> {
                               Navigator.of(context).push(
                                 MaterialPageRoute(
                                   builder: (context) => DetailPage(
-                                    myHotel: myHotels[index],
+                                    myHotel: snapshot.data[index],
                                   ),
                                 ),
                               );
                             },
-                            child: _buildItem(context, myHotels[index]),
+                            child: _buildItem(context, snapshot.data[index]),
                           );
                         },
                       );
@@ -398,10 +432,10 @@ class _HomePageState extends State<HomePage> {
                           color: Colors.amber,
                         ),
                       ),
-                      Text(
-                        "${hotel.avis.length.toInt()} reviews",
-                        style: TextStyle(color: Colors.black87, fontSize: 10),
-                      ),
+                      // Text(
+                      //   "${hotel.avis.length.toInt()} reviews",
+                      //   style: TextStyle(color: Colors.black87, fontSize: 10),
+                      // ),
                     ],
                   ),
                 ],

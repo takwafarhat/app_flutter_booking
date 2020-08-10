@@ -2,8 +2,6 @@ import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/Avis/Avis.dart';
 import 'package:app_flat/pages/Equipement.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:flutter/material.dart';
-
 import '../models/apartment_model.dart';
 
 class DatabaseService {
@@ -66,10 +64,8 @@ class DatabaseService {
           nom: doc.data['Nom'] ?? '',
           description: doc.data['Description'] ?? '',
           image: doc.data['Image'] ?? '',
-          avis: doc.data['avis'] ?? [],
           etoile: doc.data['etoile'] ?? 0,
           prix: doc.data['prix'] ?? 0,
-          features: doc.data['features'] ?? [],
           pictures: doc.data['pictures'] ?? [],
           ville: doc.data['ville'] ?? '',
           pays: doc.data['pays'] ?? '',
@@ -93,6 +89,31 @@ class DatabaseService {
       List<ApartmentModel> list = postDocuments.documents
           .map((snapshot) =>
               ApartmentModel.fromMap(snapshot.data, snapshot.documentID))
+          .toList();
+      return list;
+    } else
+      return [];
+  }
+
+  Future<List<ApartmentModel>> getHotelById(String id) async {
+    var postDocuments = await hotelCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      List<ApartmentModel> list = postDocuments.documents
+          .map((snapshot) =>
+              ApartmentModel.fromMap(snapshot.data, snapshot.documentID))
+          .where((mappedItem) => mappedItem.id == id)
+          .toList();
+      return list;
+    } else
+      return [];
+  }
+
+  Future<List<Equipement>> getEquipements() async {
+    var postDocuments = await equipementCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      List<Equipement> list = postDocuments.documents
+          .map((snapshot) =>
+              Equipement.fromMap(snapshot.data, snapshot.documentID))
           .toList();
       return list;
     } else

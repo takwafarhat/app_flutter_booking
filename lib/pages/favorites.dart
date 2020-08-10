@@ -165,12 +165,6 @@ class _FavoriteScreenState extends State<FavoriteScreen> {
                                           color: Colors.amber,
                                         ),
                                       ),
-                                      Text(
-                                        "${hotel.avis.length.toInt()} reviews",
-                                        style: TextStyle(
-                                            color: Colors.black87,
-                                            fontSize: 10),
-                                      ),
                                     ],
                                   ),
                                 ),

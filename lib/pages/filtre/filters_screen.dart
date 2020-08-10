@@ -15,7 +15,8 @@ class _FiltersScreenState extends State<FiltersScreen> {
       PopularFilterListData.equipementFList;
   List<PopularFilterListData> hebergemnetListData =
       PopularFilterListData.hebergemnetList;
-
+  final List<PopularFilterListData> equipmentFilterListDataSelected = [];
+  final List<PopularFilterListData> hebergementFilterListDataSelected = [];
   RangeValues _values = const RangeValues(0, 200);
 
   @override
@@ -69,38 +70,27 @@ class _FiltersScreenState extends State<FiltersScreen> {
                     borderRadius: const BorderRadius.all(Radius.circular(24.0)),
                     highlightColor: Colors.transparent,
                     onTap: () {
-                      print("les equipements sélectionnées sont :");
-                      print('prix=' +
-                          'min= ' +
-                          _values.start.toString() +
-                          ' max = ' +
-                          _values.end.toString());
+                      equipmentFilterListDataSelected.clear();
+                      hebergementFilterListDataSelected.clear();
 
                       print(equipmentFilterListData.length.toString());
                       equipmentFilterListData.forEach((element) {
-                        final List<PopularFilterListData>
-                            equipmentFilterListDataSelected = [];
                         if (element.isSelected == true) {
                           equipmentFilterListDataSelected.add(element);
-                          print("les elements \t " + element.titleTxt);
                         }
                       });
 
                       hebergemnetListData.forEach((d) {
-                        final List<PopularFilterListData>
-                            hebergementFilterListDataSelected = [];
                         if (d.isSelected == true) {
                           hebergementFilterListDataSelected.add(d);
-                          print("les hébergements sélèctionnées sont \t" +
-                              d.titleTxt);
                         }
                       });
-                      Navigator.of(context).push(
+                      Navigator.of(context).pushReplacement(
                         MaterialPageRoute(
                           builder: (context) => HomePage(
                             minMaxPrixFilter: _values,
-                            listnomEquip: equipmentFilterListData,
-                            listnomHeberg: hebergemnetListData,
+                            listnomEquip: equipmentFilterListDataSelected,
+                            listnomHeberg: hebergementFilterListDataSelected,
                           ),
                         ),
                       );
