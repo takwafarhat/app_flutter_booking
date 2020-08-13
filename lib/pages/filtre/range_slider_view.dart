@@ -50,7 +50,7 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                     ),
                   ),
                   Expanded(
-                    flex: 200 - _values.start.round(),
+                    flex: 300 - _values.start.round(),
                     child: const SizedBox(),
                   ),
                 ],
@@ -77,7 +77,7 @@ class _RangeSliderViewState extends State<RangeSliderView> {
                     ),
                   ),
                   Expanded(
-                    flex: 200 - _values.end.round(),
+                    flex: 300 - _values.end.round(),
                     child: const SizedBox(),
                   ),
                 ],
@@ -91,10 +91,10 @@ class _RangeSliderViewState extends State<RangeSliderView> {
             child: RangeSlider(
               values: _values,
               min: 0.0,
-              max: 200.0,
+              max: 300.0,
               activeColor: HotelAppTheme.buildLightTheme().primaryColor,
               inactiveColor: Colors.grey.withOpacity(0.4),
-              divisions: 200,
+              divisions: 300,
               onChanged: (RangeValues values) {
                 try {
                   setState(() {

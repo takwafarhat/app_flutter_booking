@@ -19,7 +19,7 @@ class OpenFlutterRatingSummary extends StatelessWidget {
 
   const OpenFlutterRatingSummary({
     Key key,
-    this.startCount = 5,
+    this.startCount = 4,
     this.rating = 5,
     this.ratingQuantity = 0,
     this.showLabel = true,

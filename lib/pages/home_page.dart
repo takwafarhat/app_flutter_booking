@@ -31,6 +31,7 @@ class _HomePageState extends State<HomePage> {
   DateTime endDate = DateTime.now().add(const Duration(days: 3));
   List<ApartmentModel> myHotels = [];
   List<Equipement> myEquipments = [];
+  final myController = TextEditingController();
 
   final tabs = [
     Center(child: Text("Home")),
@@ -53,46 +54,62 @@ class _HomePageState extends State<HomePage> {
 
   void initState() {
     super.initState();
-    // print(" listed" + widget.listnomEquip.toString());
-    // if (widget.minMaxPrixFilter != null) {
-    //   getHotels(widget.minMaxPrixFilter);
-    // }
-    // if (widget.listnomEquip != null) {
-    //   getHotelsByEquipement(widget.listnomEquip);
-    // }
-    getHotelByType(widget.listnomHeberg);
+    myController.text = '';
+    myHotels.clear();
+
+    if (widget.minMaxPrixFilter != null) {
+      print('getting filtered items');
+
+      getHotelFiltred(widget.minMaxPrixFilter, widget.listnomEquip,
+          widget.listnomHeberg, myController.text);
+    } else {
+      print('getting all');
+      getAllHotels();
+    }
   }
 
-  // RangeValues _values = const RangeValues(0, 1000);
-
-  Future<void> getHotels(RangeValues minMaxPrixFilter) async {
+  Future<void> getAllHotels() async {
+    myHotels.clear();
     await DatabaseService().getHotels().then((value) {
       value.forEach((element) {
-        if ((element.prix >= minMaxPrixFilter.start) &&
-            (element.prix <= minMaxPrixFilter.end)) {
-          myHotels.add(element);
-          print(element.prix.toString());
-        }
-        setState(() {});
+        myHotels.add(element);
       });
+      setState(() {});
     });
   }
 
-  Future<void> getHotelsByEquipement(
-      List<PopularFilterListData> listnomEquip) async {
-    print('inside getHotelsByEquipement');
-    listnomEquip.forEach((d) {
-      print("Selected  " + d.titleTxt);
+  Future<void> getHotelsBySearchField(String searchText) async {
+    myHotels.clear();
+    await DatabaseService().getHotels().then((value) {
+      value.forEach((element) {
+        if (element.nom.toUpperCase().contains(searchText.toUpperCase())) {
+          myHotels.add(element);
+        }
+      });
+      setState(() {});
     });
+  }
+
+  Future<void> getHotelFiltred(
+      RangeValues minMaxPrixFilter,
+      List<PopularFilterListData> listnomEquip,
+      List<PopularFilterListData> listnomHeberg,
+      String searchText) async {
+    myHotels.clear();
+    print('length post clear' + myHotels.length.toString());
+
     List<String> hotelsIds = [];
+    print('hotelsIds length post init ' + hotelsIds.length.toString());
 
     await DatabaseService().getEquipements().then((value) {
       value.forEach((element) {
         listnomEquip.forEach((filteredElement) {
           if (element.nom.toUpperCase() ==
               filteredElement.titleTxt.toUpperCase()) {
-            hotelsIds.add(element.idHotel);
-            print('hotel  = ' + element.idHotel);
+            if (!hotelsIds.contains(element.idHotel)) {
+              hotelsIds.add(element.idHotel);
+              print('hotel  = ' + element.idHotel);
+            }
           }
         });
       });
@@ -100,69 +117,72 @@ class _HomePageState extends State<HomePage> {
 
       hotelsIds.forEach((element) {
         DatabaseService().getHotelById(element).then((value) {
-          myHotels.add(value.first);
-          print("le nom " + value.first.nom);
-          setState(() {});
-        });
-      });
-    });
-  }
-
-  Future<void> getHotelByType(List<PopularFilterListData> listnomHeberg) async {
-    print('inside getHotelsBytype');
-    listnomHeberg.forEach((d) {
-      print("Selected  " + d.titleTxt);
-    });
-    await DatabaseService().getHotels().then((value) {
-      value.forEach((element) {
-        listnomHeberg.forEach((filteredElement) {
-          if (element.typeHotel.toUpperCase() ==
-              filteredElement.titleTxt.toUpperCase()) {
-            print(" filteredElement.titleTxt \t" + element.typeHotel);
-            myHotels.add(element);
+          if ((value.first.prix >= minMaxPrixFilter.start) &&
+              (value.first.prix <= minMaxPrixFilter.end)) {
+            listnomHeberg.forEach((filteredElement) {
+              if (value.first.typeHotel.toUpperCase() ==
+                  filteredElement.titleTxt.toUpperCase()) {
+                if (searchText != '') {
+                  if (value.first.nom
+                      .toUpperCase()
+                      .contains(searchText.toUpperCase())) {
+                    myHotels.add(value.first);
+                  }
+                } else {
+                  myHotels.add(value.first);
+                }
+              }
+              setState(() {});
+            });
           }
         });
-        setState(() {});
       });
+      hotelsIds.clear();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        flexibleSpace: Container(
-          decoration: BoxDecoration(
-              gradient: LinearGradient(
-                  begin: Alignment.topLeft,
-                  end: Alignment.bottomRight,
-                  colors: <Color>[Colors.blueGrey[50], Colors.teal[200]])),
-        ),
-        title: Text(
-          "Loca Vacances",
-          style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-        ),
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              Icons.sort,
-              color: Colors.black38,
-            ),
-            onPressed: () {
-              Navigator.push<dynamic>(
-                context,
-                MaterialPageRoute<dynamic>(
-                    builder: (BuildContext context) => FiltersScreen(),
-                    fullscreenDialog: true),
-              );
-            },
+    print('myHotels.length == ' + myHotels.length.toString());
+    return WillPopScope(
+      onWillPop: () {
+        return Future<bool>.value(false);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          flexibleSpace: Container(
+            decoration: BoxDecoration(
+                gradient: LinearGradient(
+                    begin: Alignment.topLeft,
+                    end: Alignment.bottomRight,
+                    colors: <Color>[Colors.blueGrey[50], Colors.teal[200]])),
           ),
-        ],
+          title: Text(
+            "Loca Vacances",
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.sort,
+                color: Colors.black38,
+              ),
+              onPressed: () {
+                Navigator.push<dynamic>(
+                  context,
+                  MaterialPageRoute<dynamic>(
+                      builder: (BuildContext context) => FiltersScreen(),
+                      fullscreenDialog: true),
+                );
+              },
+            ),
+          ],
+        ),
+        drawer: new Drawer(
+          child: ProfilePage(),
+        ),
+        body: _bodyHome(context),
       ),
-      drawer: new Drawer(
-        child: ProfilePage(),
-      ),
-      body: _bodyHome(context),
     );
   }
 
@@ -174,49 +194,24 @@ class _HomePageState extends State<HomePage> {
         children: <Widget>[
           getSearchBarUI(),
           Expanded(
-            child: widget.minMaxPrixFilter == null
-                ? StreamBuilder(
-                    stream: DatabaseService().hotels,
-                    builder: (context, snapshot) {
-                      return ListView.builder(
-                        physics: BouncingScrollPhysics(),
-                        itemCount:
-                            snapshot.data != null ? snapshot.data.length : 0,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              Navigator.of(context).push(
-                                MaterialPageRoute(
-                                  builder: (context) => DetailPage(
-                                    myHotel: snapshot.data[index],
-                                  ),
-                                ),
-                              );
-                            },
-                            child: _buildItem(context, snapshot.data[index]),
-                          );
-                        },
-                      );
-                    },
-                  )
-                : ListView.builder(
-                    physics: BouncingScrollPhysics(),
-                    itemCount: myHotels.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => DetailPage(
-                                myHotel: myHotels[index],
-                              ),
-                            ),
-                          );
-                        },
-                        child: _buildItem(context, myHotels[index]),
-                      );
-                    },
-                  ),
+            child: ListView.builder(
+              physics: BouncingScrollPhysics(),
+              itemCount: myHotels.length,
+              itemBuilder: (context, index) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DetailPage(
+                          myHotel: myHotels[index],
+                        ),
+                      ),
+                    );
+                  },
+                  child: _buildItem(context, myHotels[index]),
+                );
+              },
+            ),
           ),
         ],
       ),
@@ -270,6 +265,7 @@ class _HomePageState extends State<HomePage> {
                   padding: const EdgeInsets.only(
                       left: 10, right: 10, top: 4, bottom: 4),
                   child: TextField(
+                    controller: myController,
                     onChanged: (String txt) {},
                     style: const TextStyle(
                       fontSize: 18,
@@ -303,7 +299,21 @@ class _HomePageState extends State<HomePage> {
                 borderRadius: const BorderRadius.all(
                   Radius.circular(32.0),
                 ),
-                onTap: () {},
+                onTap: () {
+                  if (widget.minMaxPrixFilter != null) {
+                    getHotelFiltred(
+                        widget.minMaxPrixFilter,
+                        widget.listnomEquip,
+                        widget.listnomHeberg,
+                        myController.text);
+                  } else {
+                    if (myController.text != '') {
+                      getHotelsBySearchField(myController.text);
+                    } else {
+                      getAllHotels();
+                    }
+                  }
+                },
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Icon(FontAwesomeIcons.search,
@@ -467,6 +477,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 // Row(
 //   children: <Widget>[
 //     Container(

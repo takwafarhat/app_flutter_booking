@@ -1,8 +1,7 @@
 import 'package:app_flat/pages/ajout_bien1.dart';
-
+import 'package:country_code_picker/country_code_picker.dart' as cPicker;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-//import 'package:international_phone_input/international_phone_input.dart';
 
 class AjoutBien extends StatefulWidget {
   @override
@@ -22,17 +21,13 @@ class _AjoutBienState extends State<AjoutBien> {
   bool visible = false;
   String confirmedNumber = '';
 
+  final myController = TextEditingController();
+
   List<String> _types = [
     "Sélectionné un hébergement",
     "Appartement",
-    "Bateau",
-    "Hôtel",
+    "Hotel",
     "Maison d'hôte",
-    "Maison",
-    "Suite",
-    "Tente",
-    "Villa",
-    "Bungalow"
   ];
   String _type = "Sélectionné un hébergement";
 
@@ -42,40 +37,32 @@ class _AjoutBienState extends State<AjoutBien> {
     });
   }
 
-  List<String> _pays = [
-    "Choisir un pays",
-    "Algérie",
-    "Égypte",
-    "Libye",
-    "MAldive",
-    "Belgique",
-    "Paris",
-    "Italie",
-    "Maroc",
-    "Seychelles",
-    "Tchad",
-    "Tunisie"
-  ];
-  String _pay = "Choisir un pays";
-  void pays(String value) {
-    setState(() {
-      _pay = value;
-    });
+  // void onPhoneNumberChange(
+  //     String number, String internationalizedPhoneNumber, String isoCode) {
+  //   setState(() {
+  //     phoneNumber = number;
+  //     phoneIsoCode = isoCode;
+  //   });
+  // }
+
+  // onValidPhoneNumber(
+  //     String number, String internationalizedPhoneNumber, String isoCode) {
+  //   setState(() {
+  //     confirmedNumber = internationalizedPhoneNumber;
+  //   });
+  // }
+
+  @override
+  void initState() {
+    super.initState();
+    myController.text = 'Tunisie';
   }
 
-  void onPhoneNumberChange(
-      String number, String internationalizedPhoneNumber, String isoCode) {
-    setState(() {
-      phoneNumber = number;
-      phoneIsoCode = isoCode;
-    });
-  }
-
-  onValidPhoneNumber(
-      String number, String internationalizedPhoneNumber, String isoCode) {
-    setState(() {
-      confirmedNumber = internationalizedPhoneNumber;
-    });
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
   }
 
   @override
@@ -91,116 +78,158 @@ class _AjoutBienState extends State<AjoutBien> {
                   colors: <Color>[Colors.blueGrey[50], Colors.teal[200]])),
         ),
       ),
-      body: Container(
-        child: ListView(
+      body: SingleChildScrollView(
+        child: Column(
           children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(10),
+            new Padding(
+              padding: const EdgeInsets.all(5),
               child: TextFormField(
                 decoration: InputDecoration(
-                  labelText: 'Nom d hébergement',
+                  labelText: "Nom de l'hébergement",
                   border: new OutlineInputBorder(
                     borderRadius: BorderRadius.circular(20),
                   ),
                 ),
                 validator: (val) =>
                     val.isEmpty ? "Entrer le nom de l'hébergement" : null,
-                onChanged: (val) => nomhebergement = val,
+                onChanged: (val) => adresse = val,
                 textInputAction: TextInputAction.next,
               ),
             ),
             new Padding(
               padding: const EdgeInsets.all(5),
-              child: FormField(
-                builder: (FormFieldState state) {
-                  return InputDecorator(
+              child: Container(
+                height: MediaQuery.of(context).size.height / 11,
+                child: FormField(
+                  builder: (FormFieldState state) {
+                    return InputDecorator(
+                        decoration: InputDecoration(
+                          border: new OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                        ),
+                        child: new DropdownButtonHideUnderline(
+                          child: DropdownButton(
+                            value: _type,
+                            items: _types.map(
+                              (String value) {
+                                return DropdownMenuItem(
+                                  value: value,
+                                  child: Text(value),
+                                );
+                              },
+                            ).toList(),
+                            onChanged: (String value) {
+                              typeBien(value);
+                            },
+                          ),
+                        ));
+                  },
+                ),
+              ),
+            ),
+            new Padding(
+              padding: const EdgeInsets.all(5.0),
+              child: Row(
+                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: cPicker.CountryCodePicker(
+                      onChanged: (c) {
+                        print(c.name);
+                        myController.text = c.name;
+                      },
+                      initialSelection: 'tn',
+                      alignLeft: false,
+                      hideMainText: true,
+                      showCountryOnly: true,
+                      flagWidth: 60,
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.4,
+                    padding: EdgeInsets.only(left: 10),
+                    child: TextFormField(
+                      // initialValue: 'Tunisie',
+                      controller: myController,
+                      enabled: false,
                       decoration: InputDecoration(
                         border: new OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
                       ),
-                      child: new DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          value: _type,
-                          items: _types.map(
-                            (String value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            },
-                          ).toList(),
-                          onChanged: (String value) {
-                            typeBien(value);
-                          },
-                        ),
-                      ));
-                },
-              ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Email',
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+                    ),
                   ),
-                ),
-                validator: (val) => val.isEmpty ? 'Entrer le mail' : null,
-                onChanged: (val) => email = val,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: new TextFormField(
-                decoration: InputDecoration(
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  labelText: 'Téléphone',
-                ),
-                validator: (val) => val.isEmpty ? 'Entrer le téléphone' : null,
-                onChanged: (val) => telephone = val,
-                keyboardType: TextInputType.phone,
-                inputFormatters: [
-                  WhitelistingTextInputFormatter.digitsOnly,
                 ],
               ),
-              /*  InternationalPhoneInput(
-                      onPhoneNumberChange: onPhoneNumberChange,
-                      initialPhoneNumber: phoneNumber,
-                      initialSelection: phoneIsoCode,
-                      enabledCountries: ['+216', '+1']),*/
             ),
             new Padding(
               padding: const EdgeInsets.all(5),
-              child: FormField(
-                builder: (FormFieldState state) {
-                  return InputDecorator(
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    // margin: EdgeInsets.all(10),
+                    child: cPicker.CountryCodePicker(
+                      // onChanged: print,
+                      onChanged: (c) {
+                        print(c.name);
+                      },
+                      initialSelection: 'tn',
+                      alignLeft: false,
+                      //hideMainText: true,
+                      showCountryOnly: true,
+                    ),
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width / 1.4,
+                    padding: EdgeInsets.only(left: 10),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    child: new TextFormField(
+                      cursorColor: Theme.of(context).primaryColor,
                       decoration: InputDecoration(
                         border: new OutlineInputBorder(
                           borderRadius: BorderRadius.circular(20),
                         ),
+                        hintText: "Téléphone",
                       ),
-                      child: new DropdownButtonHideUnderline(
-                        child: DropdownButton(
-                          value: _pay,
-                          items: _pays.map(
-                            (String value) {
-                              return DropdownMenuItem(
-                                value: value,
-                                child: Text(value),
-                              );
-                            },
-                          ).toList(),
-                          onChanged: (String value) {
-                            pays(value);
-                          },
-                        ),
-                      ));
-                },
+                      keyboardType: TextInputType.phone,
+                      onTap: () {},
+
+                      validator: (val) =>
+                          val.isEmpty ? 'Entrer le téléphone' : null,
+                      onChanged: (val) => telephone = val,
+                      //keyboardType: TextInputType.phone,
+                      inputFormatters: [
+                        WhitelistingTextInputFormatter.digitsOnly,
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(5),
+              child: Container(
+                //width: MediaQuery.of(context).size.width,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Email',
+                    border: new OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  validator: (val) => val.isEmpty ? 'Entrer le mail' : null,
+                  onChanged: (val) => email = val,
+                  textInputAction: TextInputAction.next,
+                ),
               ),
             ),
             new Padding(

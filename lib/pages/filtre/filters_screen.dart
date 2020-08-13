@@ -17,7 +17,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
       PopularFilterListData.hebergemnetList;
   final List<PopularFilterListData> equipmentFilterListDataSelected = [];
   final List<PopularFilterListData> hebergementFilterListDataSelected = [];
-  RangeValues _values = const RangeValues(0, 200);
+  RangeValues _values = const RangeValues(0, 300);
 
   @override
   Widget build(BuildContext context) {
@@ -73,7 +73,7 @@ class _FiltersScreenState extends State<FiltersScreen> {
                       equipmentFilterListDataSelected.clear();
                       hebergementFilterListDataSelected.clear();
 
-                      print(equipmentFilterListData.length.toString());
+                      //print(equipmentFilterListData.length.toString());
                       equipmentFilterListData.forEach((element) {
                         if (element.isSelected == true) {
                           equipmentFilterListDataSelected.add(element);

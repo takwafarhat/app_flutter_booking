@@ -276,7 +276,7 @@ Widget _buildRatingSummary(BuildContext context, int listLength) {
       ratingQuantity: listLength,
       rating: averageRating,
       ratingDetail: [
-        StarQuantity(rating: 5, quantity: 2),
+        StarQuantity(rating: 5, quantity: 3),
         StarQuantity(rating: 4, quantity: 4),
         StarQuantity(rating: 3, quantity: 3),
         StarQuantity(rating: 2, quantity: 1),
