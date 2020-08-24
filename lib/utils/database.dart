@@ -3,6 +3,7 @@ import 'package:app_flat/pages/Avis/Avis.dart';
 import 'package:app_flat/pages/Equipement.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/apartment_model.dart';
+import 'package:app_flat/pages/EquipementChambre.dart';
 
 class DatabaseService {
   // final String uid;
@@ -172,5 +173,36 @@ class DatabaseService {
       return list;
     } else
       return [];
+  }
+
+  final CollectionReference equipementchamberCollection =
+      Firestore.instance.collection('EquipChamber');
+
+  // List<EquipementChambre> equipementChamberListFromSnapshot(
+  //     QuerySnapshot snapshot) {
+  //   return snapshot.documents.map((doc) {
+  //     EquipementChambre(
+  //       id: doc.data['id'] ?? '',
+  //       nom: doc.data['nom'] ?? '',
+  //       photo: doc.data['photo'] ?? '',
+  //     );
+  //   }).toList();
+  // }
+
+  Future<List<EquipementChambre>> getEquipementByChamberId(String id) async {
+    var postDocuments = await equipementchamberCollection.getDocuments();
+    if (postDocuments.documents.isNotEmpty) {
+      print("not empty");
+
+      List<EquipementChambre> list = postDocuments.documents
+          .map((snapshot) =>
+              EquipementChambre.fromMap(snapshot.data, snapshot.documentID))
+          .where((mappedItem) => mappedItem.idChamber == id)
+          .toList();
+      return list;
+    } else {
+      print("empty");
+      return [];
+    }
   }
 }

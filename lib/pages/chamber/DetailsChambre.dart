@@ -2,6 +2,8 @@ import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_slider_indicator/flutter_slider_indicator.dart';
+import 'package:app_flat/pages/EquipementChambre.dart';
+import 'package:app_flat/utils/database.dart';
 
 class DetailsChambre extends StatefulWidget {
   final Chambre myChambers;
@@ -18,6 +20,26 @@ class _DetailsChambrState extends State<DetailsChambre> {
   int _ncham = 0;
   int _nadult = 0;
   int _nEnf = 0;
+
+  List<EquipementChambre> myEquipments = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    getEquipementChamber(widget.myChambers.id);
+  }
+
+  Future<void> getEquipementChamber(hid) async {
+    await DatabaseService().getEquipementByChamberId(hid).then((value) {
+      value.forEach((element) {
+        print(element.nom.toString());
+        myEquipments.add(element);
+      });
+      setState(() {});
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     _pageController.addListener(() {
@@ -44,24 +66,6 @@ class _DetailsChambrState extends State<DetailsChambre> {
         _buildWidgetIndicator(context),
         _detailsChambre(context),
       ]),
-      /*floatingActionButton: new FloatingActionButton.extended(
-        onPressed: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => Reserverchamber(),
-            ),
-          );
-        },
-        label: const Text(""),
-        icon: Icon(
-          Icons.add,
-          color: Colors.teal,
-        ),
-        backgroundColor: Colors.white,
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
-      */
     );
   }
 
@@ -268,7 +272,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
                       padding: EdgeInsets.only(left: 15, top: 10),
                       child: Row(
                         children: <Widget>[
-                          Text('Les equippements : ',
+                          Text('Les equipements : ',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
@@ -277,49 +281,61 @@ class _DetailsChambrState extends State<DetailsChambre> {
                         ],
                       )),
 
-                  Padding(
-                    padding: EdgeInsets.only(left: 15, bottom: 10, top: 15),
-                    child: Row(
-                      children: <Widget>[
-                        Container(
-                          height: 50,
-                          width: MediaQuery.of(context).size.width * .9,
-                          child: ListView.builder(
-                            controller: PageController(
-                              initialPage: 0,
-                              viewportFraction: 0.2,
-                            ),
-                            itemExtent: 60,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: widget.myChambers.equipement.length,
-                            itemBuilder: (context, index) {
-                              return Image.network(
-                                widget.myChambers.equipement[index],
-                                fit: BoxFit.contain,
-                                width: 70,
-                                height: 70,
-                              );
-                            },
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-
-                  // child: RaisedButton(
-                  //   child: Text("Selectionner"),
-                  //   color: Colors.teal[300],
-                  //   onPressed: () {
-                  //     Navigator.push(
-                  //       context,
-                  //       MaterialPageRoute(
-                  //         builder: (context) => Reserverchamber(),
-                  //       ),
-                  //     );
-                  //   },
-                  //   shape: RoundedRectangleBorder(
-                  //       borderRadius: BorderRadius.circular(30.0)),
+                  // Padding(
+                  //   padding: EdgeInsets.only(left: 15, bottom: 10, top: 15),
+                  //   child: Row(
+                  //     children: <Widget>[
+                  //       Container(
+                  //         height: 50,
+                  //         width: MediaQuery.of(context).size.width * .9,
+                  //         child: ListView.builder(
+                  //           controller: PageController(
+                  //             initialPage: 0,
+                  //             viewportFraction: 0.2,
+                  //           ),
+                  //           itemExtent: 60,
+                  //           scrollDirection: Axis.horizontal,
+                  //           itemCount: widget.myChambers.equipement.length,
+                  //           itemBuilder: (context, index) {
+                  //             return Image.network(
+                  //               widget.myChambers.equipement[index],
+                  //               fit: BoxFit.contain,
+                  //               width: 70,
+                  //               height: 70,
+                  //             );
+                  //           },
+                  //         ),
+                  //       )
+                  //     ],
+                  //   ),
                   // ),
+                  GestureDetector(
+                    onTap: () {
+                      print(
+                          "le nb des equip " + myEquipments.length.toString());
+                    },
+                    child: Container(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        controller: PageController(
+                          initialPage: 0,
+                          viewportFraction: 0.2,
+                        ),
+                        itemExtent: 70,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: myEquipments.length,
+                        itemBuilder: (context, index) {
+                          return Image.network(
+                            myEquipments[index].photo,
+                            fit: BoxFit.contain,
+                            width: 150,
+                            height: 150,
+                          );
+                        },
+                      ),
+                    ),
+                  )
                 ],
               ),
             ),

@@ -6,6 +6,7 @@ import 'package:app_flat/pages/filtre/popular_filter_list.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'chamber/hotel_app_theme.dart';
+import 'package:app_flat/pages/AjoutChambre.dart';
 //import 'package:flutter_multiselect/flutter_multiselect.dart';
 
 class AjoutBien1 extends StatefulWidget {
@@ -61,19 +62,59 @@ class _AjoutBienState extends State<AjoutBien1> {
             children: <Widget>[
               Expanded(
                 child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.only(top: 20.0),
-                    child: Column(
-                      children: <Widget>[
-                        buildPaddingHeure(),
-                        const Divider(
-                          height: 1,
+                  child: Column(
+                    children: <Widget>[
+                      buildPaddingHeure(),
+                      const Divider(
+                        height: 1,
+                      ),
+                      popularFilter(),
+                      description(),
+                      uploadPhoto(),
+                      Padding(
+                        padding: const EdgeInsets.only(
+                            left: 20, right: 20, bottom: 16, top: 8),
+                        child: Container(
+                          height: 40,
+                          decoration: BoxDecoration(
+                            color: Colors.teal[200],
+                            borderRadius:
+                                const BorderRadius.all(Radius.circular(24.0)),
+                            boxShadow: <BoxShadow>[
+                              BoxShadow(
+                                color: Colors.grey.withOpacity(0.6),
+                                blurRadius: 8,
+                                offset: const Offset(4, 4),
+                              ),
+                            ],
+                          ),
+                          child: Material(
+                            color: Colors.transparent,
+                            child: InkWell(
+                              borderRadius:
+                                  const BorderRadius.all(Radius.circular(24.0)),
+                              highlightColor: Colors.transparent,
+                              onTap: () {
+                                Navigator.of(context).push(
+                                    MaterialPageRoute<Null>(
+                                        builder: (BuildContext context) {
+                                  return new ChamberAddBottomSheet();
+                                }));
+                              },
+                              child: Center(
+                                child: Text(
+                                  'Selectionner',
+                                  style: TextStyle(
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 18,
+                                      color: Colors.white),
+                                ),
+                              ),
+                            ),
+                          ),
                         ),
-                        popularFilter(),
-                        description(),
-                        uploadPhoto(),
-                      ],
-                    ),
+                      ),
+                    ],
                   ),
                 ),
               ),
@@ -261,31 +302,54 @@ class _AjoutBienState extends State<AjoutBien1> {
           Container(
             // margin: const EdgeInsets.all(30.0),
             //padding: const EdgeInsets.all(5.0),
-            height: MediaQuery.of(context).size.height / 7,
+            height: MediaQuery.of(context).size.height / 3,
             width: MediaQuery.of(context).size.width * .9,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
               borderRadius: BorderRadius.all(Radius.circular(20.0)),
             ),
             child: Padding(
-              padding: const EdgeInsets.all(5.0),
+              padding: const EdgeInsets.all(8.0),
               child: Column(
                 children: <Widget>[
                   Text(
-                    "Ajouter des images de l'hébergement ",
+                    "les images de l'hébergement ",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
                   ),
-                  IconButton(
-                    icon: Icon(
-                      FontAwesomeIcons.camera,
-                      color: Colors.teal[200],
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.center,
+                          child: Container(
+                            child: new SizedBox(
+                                width: 150.0,
+                                height: 150.0,
+                                child: (_image != null)
+                                    ? Image.file(
+                                        _image,
+                                        fit: BoxFit.fill,
+                                      )
+                                    : Image.asset('assets/logo.jpg')),
+                          ),
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            FontAwesomeIcons.camera,
+                            color: Colors.teal[200],
+                          ),
+                          onPressed: () {
+                            getImage();
+                          },
+                        ),
+                      ],
                     ),
-                    onPressed: () {
-                      getImage();
-                    },
                   ),
                 ],
               ),
@@ -307,7 +371,7 @@ class _AjoutBienState extends State<AjoutBien1> {
 
   Widget description() {
     return Padding(
-      padding: const EdgeInsets.all(8.0),
+      padding: const EdgeInsets.all(15.0),
       child: Column(children: <Widget>[
         TextFormField(
           decoration: InputDecoration(

@@ -60,6 +60,7 @@ dependencies:
   country_codes: ^1.0.1
   country_code_picker: ^1.4.0
   font_awesome_flutter: ^8.8.1
+  flutter_form_builder: ^3.13.3
 
 dev_dependencies:
   flutter_test:

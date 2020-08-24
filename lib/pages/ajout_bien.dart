@@ -37,6 +37,7 @@ class _AjoutBienState extends State<AjoutBien> {
     });
   }
 
+  final _formKey = GlobalKey<FormState>();
   // void onPhoneNumberChange(
   //     String number, String internationalizedPhoneNumber, String isoCode) {
   //   setState(() {
@@ -79,213 +80,265 @@ class _AjoutBienState extends State<AjoutBien> {
         ),
       ),
       body: SingleChildScrollView(
-        child: Column(
-          children: <Widget>[
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: "Nom de l'hébergement",
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: <Widget>[
+              new Padding(
+                padding: const EdgeInsets.all(5),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: "Nom de l'hébergement",
+                    border: new OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  validator: (val) =>
+                      val.isEmpty ? "Entrer le nom de l'hébergement" : null,
+                  onChanged: (val) => nomhebergement = val,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+              new Padding(
+                padding: const EdgeInsets.all(5),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 11,
+                  child: FormField(
+                    validator: (val) =>
+                        val.isEmpty ? "Entrer le nom de l'hébergement" : null,
+                    builder: (FormFieldState state) {
+                      return InputDecorator(
+                          decoration: InputDecoration(
+                            border: new OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: new DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              value: _type,
+                              items: _types.map(
+                                (String value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text(value),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (String value) {
+                                typeBien(value);
+                              },
+                            ),
+                          ));
+                    },
                   ),
                 ),
-                validator: (val) =>
-                    val.isEmpty ? "Entrer le nom de l'hébergement" : null,
-                onChanged: (val) => adresse = val,
-                textInputAction: TextInputAction.next,
               ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: Container(
-                height: MediaQuery.of(context).size.height / 11,
-                child: FormField(
-                  builder: (FormFieldState state) {
-                    return InputDecorator(
+              new Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Row(
+                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      child: cPicker.CountryCodePicker(
+                        onChanged: (c) {
+                          print(c.name);
+                          myController.text = c.name;
+                        },
+                        initialSelection: 'tn',
+                        alignLeft: false,
+                        hideMainText: true,
+                        showCountryOnly: true,
+                        flagWidth: 60,
+                      ),
+                    ),
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.4,
+                      padding: EdgeInsets.only(left: 10),
+                      child: TextFormField(
+                        // initialValue: 'Tunisie',
+                        controller: myController,
+                        enabled: false,
                         decoration: InputDecoration(
                           border: new OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
                         ),
-                        child: new DropdownButtonHideUnderline(
-                          child: DropdownButton(
-                            value: _type,
-                            items: _types.map(
-                              (String value) {
-                                return DropdownMenuItem(
-                                  value: value,
-                                  child: Text(value),
-                                );
-                              },
-                            ).toList(),
-                            onChanged: (String value) {
-                              typeBien(value);
-                            },
-                          ),
-                        ));
-                  },
+                      ),
+                    ),
+                  ],
                 ),
               ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5.0),
-              child: Row(
-                // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: cPicker.CountryCodePicker(
-                      onChanged: (c) {
-                        print(c.name);
-                        myController.text = c.name;
-                      },
-                      initialSelection: 'tn',
-                      alignLeft: false,
-                      hideMainText: true,
-                      showCountryOnly: true,
-                      flagWidth: 60,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.4,
-                    padding: EdgeInsets.only(left: 10),
-                    child: TextFormField(
-                      // initialValue: 'Tunisie',
-                      controller: myController,
-                      enabled: false,
-                      decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
+              new Padding(
+                padding: const EdgeInsets.all(5),
+                child: Row(
+                  children: <Widget>[
+                    Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
+                      ),
+                      // margin: EdgeInsets.all(10),
+                      child: cPicker.CountryCodePicker(
+                        // onChanged: print,
+                        onChanged: (c) {
+                          print(c.name);
+                        },
+                        initialSelection: 'tn',
+                        alignLeft: false,
+                        //hideMainText: true,
+                        showCountryOnly: true,
                       ),
                     ),
-                  ),
-                ],
-              ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    // margin: EdgeInsets.all(10),
-                    child: cPicker.CountryCodePicker(
-                      // onChanged: print,
-                      onChanged: (c) {
-                        print(c.name);
-                      },
-                      initialSelection: 'tn',
-                      alignLeft: false,
-                      //hideMainText: true,
-                      showCountryOnly: true,
-                    ),
-                  ),
-                  Container(
-                    width: MediaQuery.of(context).size.width / 1.4,
-                    padding: EdgeInsets.only(left: 10),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5),
-                    ),
-                    child: new TextFormField(
-                      cursorColor: Theme.of(context).primaryColor,
-                      decoration: InputDecoration(
-                        border: new OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        hintText: "Téléphone",
+                    Container(
+                      width: MediaQuery.of(context).size.width / 1.4,
+                      padding: EdgeInsets.only(left: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5),
                       ),
-                      keyboardType: TextInputType.phone,
-                      onTap: () {},
+                      child: new TextFormField(
+                        cursorColor: Theme.of(context).primaryColor,
+                        decoration: InputDecoration(
+                          border: new OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          hintText: "Téléphone",
+                        ),
+                        keyboardType: TextInputType.phone,
+                        onTap: () {},
 
-                      validator: (val) =>
-                          val.isEmpty ? 'Entrer le téléphone' : null,
-                      onChanged: (val) => telephone = val,
-                      //keyboardType: TextInputType.phone,
-                      inputFormatters: [
-                        WhitelistingTextInputFormatter.digitsOnly,
-                      ],
+                        validator: (val) =>
+                            val.isEmpty ? 'Entrer le téléphone' : null,
+                        onChanged: (val) => telephone = val,
+                        //keyboardType: TextInputType.phone,
+                        inputFormatters: [
+                          WhitelistingTextInputFormatter.digitsOnly,
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(5),
-              child: Container(
-                //width: MediaQuery.of(context).size.width,
+              Padding(
+                padding: const EdgeInsets.all(5),
+                child: Container(
+                  //width: MediaQuery.of(context).size.width,
+                  child: TextFormField(
+                    keyboardType: TextInputType.emailAddress,
+                    decoration: InputDecoration(
+                      labelText: 'Email',
+                      border: new OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                    ),
+                    validator: (val) => val.isEmpty ? 'Entrer le mail' : null,
+                    onChanged: (val) => email = val,
+                    textInputAction: TextInputAction.next,
+                  ),
+                ),
+              ),
+              new Padding(
+                padding: const EdgeInsets.all(5),
                 child: TextFormField(
                   decoration: InputDecoration(
-                    labelText: 'Email',
+                    labelText: 'Adresse',
                     border: new OutlineInputBorder(
                       borderRadius: BorderRadius.circular(20),
                     ),
                   ),
-                  validator: (val) => val.isEmpty ? 'Entrer le mail' : null,
-                  onChanged: (val) => email = val,
+                  validator: (val) => val.isEmpty ? "Entrer l'adresse" : null,
+                  onChanged: (val) => adresse = val,
                   textInputAction: TextInputAction.next,
                 ),
               ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Adresse',
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
+              new Padding(
+                padding: const EdgeInsets.all(5),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'ville',
+                    border: new OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  validator: (val) => val.isEmpty ? 'Entrer la ville' : null,
+                  onChanged: (val) => ville = val,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+              new Padding(
+                padding: const EdgeInsets.all(5),
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    labelText: 'Code Postal',
+                    border: new OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(20),
+                    ),
+                  ),
+                  validator: (val) =>
+                      val.isEmpty ? 'Entrer le code postal' : null,
+                  onChanged: (val) => codepostle = val,
+                  textInputAction: TextInputAction.next,
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.only(
+                    left: 20, right: 20, bottom: 16, top: 8),
+                child: Container(
+                  height: 40,
+                  decoration: BoxDecoration(
+                    color: Colors.teal[200],
+                    borderRadius: const BorderRadius.all(Radius.circular(24.0)),
+                    boxShadow: <BoxShadow>[
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.6),
+                        blurRadius: 8,
+                        offset: const Offset(4, 4),
+                      ),
+                    ],
+                  ),
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius:
+                          const BorderRadius.all(Radius.circular(24.0)),
+                      highlightColor: Colors.transparent,
+                      onTap: () {
+                        _formKey.currentState.save();
+                        if (_formKey.currentState.validate()) {
+                          print(" le nom de l'héber" + nomhebergement);
+                          print(" le pays " + myController.text);
+                        }
+                        // Navigator.of(context).push(MaterialPageRoute<Null>(
+                        //     builder: (BuildContext context) {
+                        //   return new AjoutBien1();
+                        // }));
+                      },
+                      child: Center(
+                        child: Text(
+                          'Selectionner',
+                          style: TextStyle(
+                              fontWeight: FontWeight.w500,
+                              fontSize: 18,
+                              color: Colors.white),
+                        ),
+                      ),
+                    ),
                   ),
                 ),
-                validator: (val) => val.isEmpty ? "Entrer l'adresse" : null,
-                onChanged: (val) => adresse = val,
-                textInputAction: TextInputAction.next,
               ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'ville',
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                validator: (val) => val.isEmpty ? 'Entrer la ville' : null,
-                onChanged: (val) => ville = val,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
-            new Padding(
-              padding: const EdgeInsets.all(5),
-              child: TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Code Postal',
-                  border: new OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                ),
-                validator: (val) =>
-                    val.isEmpty ? 'Entrer le code postal' : null,
-                onChanged: (val) => codepostle = val,
-                textInputAction: TextInputAction.next,
-              ),
-            ),
-            RaisedButton(
-              child: Text("Suivant"),
-              color: Colors.teal[100],
-              onPressed: () {
-                Navigator.of(context).push(
-                    MaterialPageRoute<Null>(builder: (BuildContext context) {
-                  return new AjoutBien1();
-                }));
-              },
-            ),
-          ],
+              // RaisedButton(
+              //   child: Text("Suivant"),
+              //   color: Colors.teal[100],
+              //   onPressed: () {
+              //     Navigator.of(context).push(
+              //         MaterialPageRoute<Null>(builder: (BuildContext context) {
+              //       return new AjoutBien1();
+              //     }));
+              //   },
+              // ),
+            ],
+          ),
         ),
       ),
     );

@@ -56,4 +56,48 @@ class PopularFilterListData {
       isSelected: true,
     ),
   ];
+
+  static List<PopularFilterListData> equipementChamberList =
+      <PopularFilterListData>[
+    PopularFilterListData(
+      titleTxt: 'card',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'chaud',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'climatiseur',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'dinner',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'interdit',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'piscine',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'salledebain',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'telephone',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'tv',
+      isSelected: true,
+    ),
+    PopularFilterListData(
+      titleTxt: 'wifi',
+      isSelected: true,
+    ),
+  ];
 }
