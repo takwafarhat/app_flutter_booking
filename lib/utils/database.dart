@@ -52,6 +52,14 @@ class DatabaseService {
       return [];
   }
 
+  Future<void> addHotel(ApartmentModel hotel) async {
+    await hotelCollection.add(hotel.toMap());
+  }
+
+  Future<void> addChambre(Chambre chambre) async {
+    await chambreCollection.add(chambre.toMap());
+  }
+
   Future<List<ApartmentModel>> getHotelById(String id) async {
     var postDocuments = await hotelCollection.getDocuments();
     if (postDocuments.documents.isNotEmpty) {
@@ -89,11 +97,11 @@ class DatabaseService {
       Chambre(
         nomHotel: doc.data['nomHotel'] ?? '',
         photo: doc.data['photo'] ?? '',
-        prix: doc.data['prix'] ?? 0,
+        prix: doc.data['prix'] ?? 0.0,
         type: doc.data['type'] ?? [],
-        equipement: doc.data['equipement'] ?? [],
         pictures: doc.data['pictures'] ?? [],
         description: doc.data['description'] ?? '',
+        nbChambredispo: doc.data['nbChambredispo'] ?? 0,
       );
     }).toList();
   }

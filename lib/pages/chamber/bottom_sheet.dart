@@ -7,11 +7,13 @@ class ChamberBottomSheet extends StatefulWidget {
   final Function(int, int, int) onApplyClick;
   final Function onCancelClick;
   final String myHotel;
+  final Chambre chambre;
 
   const ChamberBottomSheet({
     this.onApplyClick,
     this.onCancelClick,
     this.myHotel,
+    this.chambre,
   });
   @override
   _ChamberBottomSheetState createState() => _ChamberBottomSheetState();
@@ -122,10 +124,10 @@ class _ChamberBottomSheetState extends State<ChamberBottomSheet> {
                         child: Text('Ajouter une chambre'),
                         onTap: () {
                           setState(() {
-                            print(myChambers.length);
-                            if (x < myChambers.length)
+                            //  print(widget.chambre.nbChambredispo);
+                            if (x < widget.chambre.nbChambredispo)
                               x++;
-                            else if (x >= myChambers.length)
+                            else if (x >= widget.chambre.nbChambredispo)
                               showDialog(
                                 context: context,
                                 builder: (BuildContext context) {

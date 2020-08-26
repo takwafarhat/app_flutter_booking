@@ -348,6 +348,7 @@ class _DetailsChambrState extends State<DetailsChambre> {
       context: context,
       builder: (BuildContext context) => ChamberBottomSheet(
         myHotel: widget.hotelID,
+        chambre: widget.myChambers,
         onApplyClick: (int nbCham, int nbAdlt, int nbEnf) {
           setState(() {
             _ncham = nbCham;

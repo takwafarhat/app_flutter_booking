@@ -35,7 +35,7 @@ class _DetailPageState extends State<DetailPage> {
     super.initState();
     print('myHotel address' + widget.myHotel.address);
 
-    print('myHotel geopoint' + widget.myHotel.position.latitude.toString());
+    // print('myHotel geopoint' + widget.myHotel.position.latitude.toString());
     getChambers(widget.myHotel.id);
     isFav = widget.myHotel.favoris;
     getAvis(widget.myHotel.id);
@@ -331,7 +331,7 @@ class _DetailPageState extends State<DetailPage> {
     return Align(
       alignment: Alignment.topCenter,
       child: Padding(
-        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * .35),
+        padding: EdgeInsets.only(top: MediaQuery.of(context).size.height * .25),
         child: SliderIndicator(
           length: widget.myHotel.pictures.length,
           activeIndex: _currentIndex,
@@ -384,7 +384,7 @@ class _DetailPageState extends State<DetailPage> {
               color: Colors.white,
             ),
             Text(
-              "${widget.myHotel.prix.toInt()}",
+              "${widget.myHotel.prix.toString()}",
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -558,16 +558,7 @@ class _DetailPageState extends State<DetailPage> {
                       Row(
                         children: <Widget>[
                           Text(
-                            widget.myHotel.hentree.toDate().hour.toString(),
-                          ),
-                          Text(
-                            ":",
-                          ),
-                          Text(
-                            widget.myHotel.hentree.toDate().minute.toString(),
-                          ),
-                          Text(
-                            widget.myHotel.hentree.toDate().minute.toString(),
+                            widget.myHotel.hentree,
                           ),
                           Text(
                             " PM",
@@ -591,16 +582,7 @@ class _DetailPageState extends State<DetailPage> {
                       Row(
                         children: <Widget>[
                           Text(
-                            widget.myHotel.hsortie.toDate().hour.toString(),
-                          ),
-                          Text(
-                            ":",
-                          ),
-                          Text(
-                            widget.myHotel.hsortie.toDate().minute.toString(),
-                          ),
-                          Text(
-                            widget.myHotel.hsortie.toDate().minute.toString(),
+                            widget.myHotel.hsortie,
                           ),
                           Text(
                             " AM",

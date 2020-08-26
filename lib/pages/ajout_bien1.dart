@@ -7,9 +7,14 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'chamber/hotel_app_theme.dart';
 import 'package:app_flat/pages/AjoutChambre.dart';
+import 'package:multi_image_picker/multi_image_picker.dart';
 //import 'package:flutter_multiselect/flutter_multiselect.dart';
 
 class AjoutBien1 extends StatefulWidget {
+  final Map<String, dynamic> form;
+
+  const AjoutBien1({@required this.form});
+
   @override
   State<StatefulWidget> createState() => new _AjoutBienState();
 }
@@ -19,7 +24,7 @@ class _AjoutBienState extends State<AjoutBien1> {
   TimeOfDay _heureOut = TimeOfDay.now();
   String hdescription = '';
   File _image;
-
+  List<Asset> images = List<Asset>();
   _pickTime1() async {
     TimeOfDay t = await showTimePicker(context: context, initialTime: _heureIn);
     if (t != null)
@@ -39,8 +44,18 @@ class _AjoutBienState extends State<AjoutBien1> {
 
   List<PopularFilterListData> equipmentFilterListData =
       PopularFilterListData.equipementFList;
+
   bool _isChecked = true;
   String _currText = '';
+
+  Map<String, dynamic> myForm = {};
+  final _formKey = GlobalKey<FormState>();
+  @override
+  void initState() {
+    super.initState();
+    myForm = widget.form;
+    print("form" + myForm.toString());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -62,59 +77,96 @@ class _AjoutBienState extends State<AjoutBien1> {
             children: <Widget>[
               Expanded(
                 child: SingleChildScrollView(
-                  child: Column(
-                    children: <Widget>[
-                      buildPaddingHeure(),
-                      const Divider(
-                        height: 1,
-                      ),
-                      popularFilter(),
-                      description(),
-                      uploadPhoto(),
-                      Padding(
-                        padding: const EdgeInsets.only(
-                            left: 20, right: 20, bottom: 16, top: 8),
-                        child: Container(
-                          height: 40,
-                          decoration: BoxDecoration(
-                            color: Colors.teal[200],
-                            borderRadius:
-                                const BorderRadius.all(Radius.circular(24.0)),
-                            boxShadow: <BoxShadow>[
-                              BoxShadow(
-                                color: Colors.grey.withOpacity(0.6),
-                                blurRadius: 8,
-                                offset: const Offset(4, 4),
-                              ),
-                            ],
-                          ),
-                          child: Material(
-                            color: Colors.transparent,
-                            child: InkWell(
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
+                      children: <Widget>[
+                        buildPaddingHeure(),
+                        const Divider(
+                          height: 1,
+                        ),
+                        popularFilter(),
+                        description(),
+                        uploadPhoto(),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 20, right: 20, bottom: 16, top: 8),
+                          child: Container(
+                            height: 40,
+                            decoration: BoxDecoration(
+                              color: Colors.teal[200],
                               borderRadius:
                                   const BorderRadius.all(Radius.circular(24.0)),
-                              highlightColor: Colors.transparent,
-                              onTap: () {
-                                Navigator.of(context).push(
-                                    MaterialPageRoute<Null>(
-                                        builder: (BuildContext context) {
-                                  return new ChamberAddBottomSheet();
-                                }));
-                              },
-                              child: Center(
-                                child: Text(
-                                  'Selectionner',
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 18,
-                                      color: Colors.white),
+                              boxShadow: <BoxShadow>[
+                                BoxShadow(
+                                  color: Colors.grey.withOpacity(0.6),
+                                  blurRadius: 8,
+                                  offset: const Offset(4, 4),
+                                ),
+                              ],
+                            ),
+                            child: Material(
+                              color: Colors.transparent,
+                              child: InkWell(
+                                borderRadius: const BorderRadius.all(
+                                    Radius.circular(24.0)),
+                                highlightColor: Colors.transparent,
+                                onTap: () {
+                                  _formKey.currentState.save();
+                                  if (_formKey.currentState.validate()) {
+                                    //print("_heureIn" + _heureIn.toString());
+                                    myForm["heureIn"] =
+                                        _heureIn.hour.toString() +
+                                            ':' +
+                                            _heureIn.minute.toString();
+                                    myForm["heureOut"] =
+                                        _heureOut.hour.toString() +
+                                            ':' +
+                                            _heureOut.minute.toString();
+                                    myForm["description"] = hdescription;
+                                    myForm["equipement"] =
+                                        equipmentFilterListData;
+                                    myForm["les photos de l'hôtel"] = images;
+
+                                    print(myForm);
+
+                                    equipmentFilterListData.forEach((element) {
+                                      print(element.isSelected);
+                                    });
+
+                                    // print(myForm.toString());
+
+                                    Navigator.of(context).push(
+                                        MaterialPageRoute<Null>(
+                                            builder: (BuildContext context) {
+                                      return new ChamberAddBottomSheet(
+                                        form: myForm,
+                                      );
+                                    }));
+                                  }
+                                  //   Navigator.of(context).push(
+                                  //       MaterialPageRoute<Null>(
+                                  //           builder: (BuildContext context) {
+                                  //     return new ChamberAddBottomSheet(
+                                  //       form: myForm,
+                                  //     );
+                                  //   }));
+                                },
+                                child: Center(
+                                  child: Text(
+                                    'Selectionner',
+                                    style: TextStyle(
+                                        fontWeight: FontWeight.w500,
+                                        fontSize: 18,
+                                        color: Colors.white),
+                                  ),
                                 ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   ),
                 ),
               ),
@@ -295,14 +347,14 @@ class _AjoutBienState extends State<AjoutBien1> {
   }
 
   Widget uploadPhoto() {
-    return Padding(
+    return new Padding(
       padding: const EdgeInsets.only(left: 8.0, right: 10),
       child: Column(
         children: <Widget>[
           Container(
             // margin: const EdgeInsets.all(30.0),
             //padding: const EdgeInsets.all(5.0),
-            height: MediaQuery.of(context).size.height / 3,
+            height: MediaQuery.of(context).size.height / 2,
             width: MediaQuery.of(context).size.width * .9,
             decoration: BoxDecoration(
               border: Border.all(color: Colors.grey),
@@ -310,48 +362,142 @@ class _AjoutBienState extends State<AjoutBien1> {
             ),
             child: Padding(
               padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: <Widget>[
-                  Text(
-                    "les images de l'hébergement ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 16,
+              child: SingleChildScrollView(
+                child: Column(
+                  children: <Widget>[
+                    Text(
+                      "Ajouter les photos de l'hébergement",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                      ),
                     ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      children: <Widget>[
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            child: new SizedBox(
-                                width: 150.0,
-                                height: 150.0,
-                                child: (_image != null)
-                                    ? Image.file(
-                                        _image,
-                                        fit: BoxFit.fill,
-                                      )
-                                    : Image.asset('assets/logo.jpg')),
+                    Padding(
+                      padding: const EdgeInsets.all(10.0),
+                      child: Column(
+                        children: <Widget>[
+                          Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: <Widget>[
+                              Align(
+                                alignment: Alignment.center,
+                                child: Container(
+                                  child: new SizedBox(
+                                      width: 100.0,
+                                      height: 100.0,
+                                      child: (_image != null)
+                                          ? Image.file(
+                                              _image,
+                                              fit: BoxFit.fill,
+                                            )
+                                          : Image.asset('assets/logo.jpg')),
+                                ),
+                              ),
+                              IconButton(
+                                icon: Icon(
+                                  FontAwesomeIcons.camera,
+                                  color: Colors.teal[200],
+                                ),
+                                onPressed: () {
+                                  gallerie();
+                                  // showDialog(
+                                  //     context: context,
+                                  //     builder: (BuildContext) {
+                                  //       return AlertDialog(
+                                  //         shape: RoundedRectangleBorder(
+                                  //             borderRadius:
+                                  //                 BorderRadius.all(
+                                  //                     Radius.circular(20))),
+                                  //         title: Text(
+                                  //           "Telecharget l'image ",
+                                  //           style: Theme.of(context)
+                                  //               .textTheme
+                                  //               .title,
+                                  //           textAlign: TextAlign.center,
+                                  //         ),
+                                  //         content: Container(
+                                  //           width: 100.0,
+                                  //           height: 100.0,
+                                  //           decoration: new BoxDecoration(
+                                  //             shape: BoxShape.rectangle,
+                                  //             color: const Color(0xFFFFFF),
+                                  //             borderRadius:
+                                  //                 new BorderRadius.all(
+                                  //                     new Radius.circular(
+                                  //                         32.0)),
+                                  //           ),
+                                  //           child: SingleChildScrollView(
+                                  //             child: ListBody(
+                                  //               children: <Widget>[
+                                  //                 Padding(
+                                  //                   padding:
+                                  //                       const EdgeInsets
+                                  //                           .all(8.0),
+                                  //                   child: RaisedButton(
+                                  //                     child:
+                                  //                         Text("Galerie"),
+                                  //                     color:
+                                  //                         Colors.teal[200],
+                                  //                     colorBrightness:
+                                  //                         Brightness.dark,
+                                  //                     onPressed: () {
+                                  //                       gallerie();
+                                  //                     },
+                                  //                     shape: RoundedRectangleBorder(
+                                  //                         borderRadius:
+                                  //                             BorderRadius
+                                  //                                 .circular(
+                                  //                                     20.0)),
+                                  //                   ),
+                                  //                 ),
+                                  //                 // Padding(
+                                  //                 //   padding:
+                                  //                 //       const EdgeInsets
+                                  //                 //           .all(8.0),
+                                  //                 //   child: RaisedButton(
+                                  //                 //     child: Text("Camera"),
+                                  //                 //     color:
+                                  //                 //         Colors.teal[200],
+                                  //                 //     colorBrightness:
+                                  //                 //         Brightness.dark,
+                                  //                 //     onPressed: () {
+                                  //                 //       camera();
+                                  //                 //     },
+                                  //                 //     shape: RoundedRectangleBorder(
+                                  //                 //         borderRadius:
+                                  //                 //             BorderRadius
+                                  //                 //                 .circular(
+                                  //                 //                     20.0)),
+                                  //                 //   ),
+                                  //                 // )
+                                  //               ],
+                                  //             ),
+                                  //           ),
+                                  //         ),
+                                  //       );
+                                  //     });
+                                },
+                              ),
+                            ],
                           ),
-                        ),
-                        IconButton(
-                          icon: Icon(
-                            FontAwesomeIcons.camera,
-                            color: Colors.teal[200],
-                          ),
-                          onPressed: () {
-                            getImage();
-                          },
-                        ),
-                      ],
+                          Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Container(
+                              height: 200,
+                              width: 400,
+                              child: Column(
+                                children: <Widget>[
+                                  Expanded(child: buildGridView()),
+                                ],
+                              ),
+                            ),
+                          )
+                        ],
+                      ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           )
@@ -360,12 +506,33 @@ class _AjoutBienState extends State<AjoutBien1> {
     );
   }
 
-  Future getImage() async {
-    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+  Widget buildGridView() {
+    return GridView.count(
+      crossAxisCount: 3,
+      children: List.generate(images.length, (index) {
+        Asset asset = images[index];
+        return Container(
+          width: 150,
+          height: 150,
+          child: AssetThumb(
+            asset: asset,
+            width: 150,
+            height: 150,
+          ),
+        );
+      }),
+    );
+  }
+
+  Future<void> gallerie() async {
+    List<Asset> image = List<Asset>();
+    image = await MultiImagePicker.pickImages(
+        maxImages: 10, enableCamera: true, selectedAssets: images);
 
     setState(() {
-      _image = image;
-      print('Image Path $_image');
+      images = image;
+
+      // print('Image Path $_image');
     });
   }
 
@@ -380,8 +547,10 @@ class _AjoutBienState extends State<AjoutBien1> {
               borderRadius: BorderRadius.circular(20),
             ),
           ),
+          maxLines: 3,
           onChanged: (val) => hdescription = val,
           textInputAction: TextInputAction.next,
+          validator: (val) => val.isEmpty ? 'Entrer la description ' : null,
         ),
       ]),
     );

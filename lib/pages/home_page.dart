@@ -343,7 +343,9 @@ class _HomePageState extends State<HomePage> {
                     Radius.circular(20),
                   ),
                   image: new DecorationImage(
-                    image: NetworkImage(hotel.image),
+                    image: NetworkImage(hotel.image == null
+                        ? 'https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-4.jpg'
+                        : hotel.image),
                   ),
                   boxShadow: [
                     BoxShadow(
@@ -429,7 +431,7 @@ class _HomePageState extends State<HomePage> {
                         size: 15,
                       ),
                       Text(
-                        "${hotel.prix.toInt()}",
+                        "${hotel.prix.toString()}",
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
@@ -455,7 +457,9 @@ class _HomePageState extends State<HomePage> {
                     children: <Widget>[
                       RatingBar(
                         onRatingUpdate: (v) {},
-                        initialRating: hotel.etoile.toDouble(),
+                        initialRating: hotel.etoile == null
+                            ? 5.0
+                            : hotel.etoile.toDouble(),
                         itemSize: 12,
                         itemBuilder: (context, index) => Icon(
                           Icons.star,

@@ -2,6 +2,9 @@ import 'package:app_flat/pages/ajout_bien1.dart';
 import 'package:country_code_picker/country_code_picker.dart' as cPicker;
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class AjoutBien extends StatefulWidget {
   @override
@@ -14,22 +17,19 @@ class _AjoutBienState extends State<AjoutBien> {
   String telephone = '';
   String ville = '';
   String adresse = '';
-  String codepostle = '';
 
-  String phoneNumber;
-  String phoneIsoCode;
+  // String phoneIsoCode;
   bool visible = false;
   String confirmedNumber = '';
 
   final myController = TextEditingController();
-
+  File _image;
   List<String> _types = [
-    "Sélectionné un hébergement",
     "Appartement",
     "Hotel",
     "Maison d'hôte",
   ];
-  String _type = "Sélectionné un hébergement";
+  String _type = "Hotel";
 
   void typeBien(String value) {
     setState(() {
@@ -38,6 +38,8 @@ class _AjoutBienState extends State<AjoutBien> {
   }
 
   final _formKey = GlobalKey<FormState>();
+  Map<String, dynamic> myForm = {};
+
   // void onPhoneNumberChange(
   //     String number, String internationalizedPhoneNumber, String isoCode) {
   //   setState(() {
@@ -64,6 +66,176 @@ class _AjoutBienState extends State<AjoutBien> {
     // Clean up the controller when the widget is disposed.
     myController.dispose();
     super.dispose();
+  }
+
+  Widget uploadPhoto() {
+    return new Padding(
+      padding: const EdgeInsets.only(left: 8.0, right: 10),
+      child: Column(
+        children: <Widget>[
+          Container(
+            // margin: const EdgeInsets.all(30.0),
+            //padding: const EdgeInsets.all(5.0),
+            height: MediaQuery.of(context).size.height / 3,
+            width: MediaQuery.of(context).size.width * .9,
+            decoration: BoxDecoration(
+              border: Border.all(color: Colors.grey),
+              borderRadius: BorderRadius.all(Radius.circular(20.0)),
+            ),
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    "Ajouter les photos de l'hébergement",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Column(
+                      children: <Widget>[
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          children: <Widget>[
+                            Align(
+                              alignment: Alignment.center,
+                              child: Container(
+                                child: new SizedBox(
+                                    width: 100.0,
+                                    height: 100.0,
+                                    child: (_image != null)
+                                        ? Image.file(
+                                            _image,
+                                            fit: BoxFit.fill,
+                                          )
+                                        : Image.asset('assets/logo.jpg')),
+                              ),
+                            ),
+                            IconButton(
+                              icon: Icon(
+                                FontAwesomeIcons.camera,
+                                color: Colors.teal[200],
+                              ),
+                              onPressed: () {
+                                showDialog(
+                                    context: context,
+                                    builder: (BuildContext) {
+                                      return AlertDialog(
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius: BorderRadius.all(
+                                                Radius.circular(20))),
+                                        title: Text(
+                                          "Telecharget l'image ",
+                                          style:
+                                              Theme.of(context).textTheme.title,
+                                          textAlign: TextAlign.center,
+                                        ),
+                                        content: Container(
+                                          width: 150.0,
+                                          height: 150.0,
+                                          decoration: new BoxDecoration(
+                                            shape: BoxShape.rectangle,
+                                            color: const Color(0xFFFFFF),
+                                            borderRadius: new BorderRadius.all(
+                                                new Radius.circular(32.0)),
+                                          ),
+                                          child: SingleChildScrollView(
+                                            child: ListBody(
+                                              children: <Widget>[
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: RaisedButton(
+                                                    child: Text("Galerie"),
+                                                    color: Colors.teal[200],
+                                                    colorBrightness:
+                                                        Brightness.dark,
+                                                    onPressed: () {
+                                                      gallerie();
+                                                    },
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0)),
+                                                  ),
+                                                ),
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: RaisedButton(
+                                                    child: Text("Camera"),
+                                                    color: Colors.teal[200],
+                                                    colorBrightness:
+                                                        Brightness.dark,
+                                                    onPressed: () {
+                                                      camera();
+                                                    },
+                                                    shape:
+                                                        RoundedRectangleBorder(
+                                                            borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                        20.0)),
+                                                  ),
+                                                )
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      );
+                                    });
+                              },
+                            ),
+                          ],
+                        ),
+                        // Padding(
+                        //   padding: const EdgeInsets.all(8.0),
+                        //   child: Container(
+                        //     height: 200,
+                        //     width: 400,
+                        //     child: Column(
+                        //       children: <Widget>[
+                        //         Expanded(),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // )
+                      ],
+                    ),
+                  ),
+                ],
+              ),
+            ),
+          )
+        ],
+      ),
+    );
+  }
+
+  Future<void> gallerie() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      _image = image;
+
+      // print('Image Path $_image');
+    });
+  }
+
+  Future<void> camera() async {
+    var image = await ImagePicker.pickImage(source: ImageSource.camera);
+
+    setState(() {
+      _image = image;
+
+      // print('Image Path $_image');
+    });
   }
 
   @override
@@ -104,8 +276,6 @@ class _AjoutBienState extends State<AjoutBien> {
                 child: Container(
                   height: MediaQuery.of(context).size.height / 11,
                   child: FormField(
-                    validator: (val) =>
-                        val.isEmpty ? "Entrer le nom de l'hébergement" : null,
                     builder: (FormFieldState state) {
                       return InputDecorator(
                           decoration: InputDecoration(
@@ -206,7 +376,6 @@ class _AjoutBienState extends State<AjoutBien> {
                           hintText: "Téléphone",
                         ),
                         keyboardType: TextInputType.phone,
-                        onTap: () {},
 
                         validator: (val) =>
                             val.isEmpty ? 'Entrer le téléphone' : null,
@@ -266,21 +435,8 @@ class _AjoutBienState extends State<AjoutBien> {
                   textInputAction: TextInputAction.next,
                 ),
               ),
-              new Padding(
-                padding: const EdgeInsets.all(5),
-                child: TextFormField(
-                  decoration: InputDecoration(
-                    labelText: 'Code Postal',
-                    border: new OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(20),
-                    ),
-                  ),
-                  validator: (val) =>
-                      val.isEmpty ? 'Entrer le code postal' : null,
-                  onChanged: (val) => codepostle = val,
-                  textInputAction: TextInputAction.next,
-                ),
-              ),
+
+              uploadPhoto(),
               Padding(
                 padding: const EdgeInsets.only(
                     left: 20, right: 20, bottom: 16, top: 8),
@@ -306,12 +462,31 @@ class _AjoutBienState extends State<AjoutBien> {
                       onTap: () {
                         _formKey.currentState.save();
                         if (_formKey.currentState.validate()) {
-                          print(" le nom de l'héber" + nomhebergement);
-                          print(" le pays " + myController.text);
+                          print("m phone" + telephone);
+                          print("la photo" + _image.toString());
+                          myForm['nom'] = nomhebergement;
+                          myForm['type'] = _type;
+                          myForm["pay"] = myController.text;
+                          myForm['telephone'] = telephone;
+                          myForm['email'] = email;
+                          myForm['adresse'] = adresse;
+                          myForm['ville'] = ville;
+                          myForm["image"] = _image;
+
+                          myForm['photoCouverture'] = _image;
+                          print(myForm.toString());
+                          Navigator.of(context).push(MaterialPageRoute<Null>(
+                              builder: (BuildContext context) {
+                            return new AjoutBien1(
+                              form: myForm,
+                            );
+                          }));
                         }
                         // Navigator.of(context).push(MaterialPageRoute<Null>(
                         //     builder: (BuildContext context) {
-                        //   return new AjoutBien1();
+                        //   return new AjoutBien1(
+                        //     form: myForm,
+                        //   );
                         // }));
                       },
                       child: Center(
