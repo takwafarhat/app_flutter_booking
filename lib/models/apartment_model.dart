@@ -6,7 +6,7 @@ class ApartmentModel {
   final String image;
 
   final int etoile;
-  final int prix;
+  final double prix;
   final String typeHotel;
   final List pictures;
   final String pays;
@@ -53,7 +53,7 @@ class ApartmentModel {
         description: map['Description'],
         image: map['Image'],
         etoile: map['etoile'],
-        prix: map['prix'],
+        prix: (map['prix'] == null ? 0.0 : map['prix'] as num).toDouble(),
         pictures: map['pictures'],
         ville: map['ville'],
         pays: map['pays'],

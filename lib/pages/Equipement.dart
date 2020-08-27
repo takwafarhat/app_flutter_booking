@@ -17,4 +17,10 @@ class Equipement {
       photo: map['photo'],
     );
   }
+
+  Map<String, dynamic> toMap() => {
+        'idHotel': idHotel,
+        'nom': nom,
+        'photo': photo,
+      };
 }

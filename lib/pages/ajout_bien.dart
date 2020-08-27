@@ -5,6 +5,8 @@ import 'package:flutter/services.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class AjoutBien extends StatefulWidget {
   @override
@@ -34,6 +36,20 @@ class _AjoutBienState extends State<AjoutBien> {
   void typeBien(String value) {
     setState(() {
       _type = value;
+    });
+  }
+
+  List<int> etoile = [
+    1,
+    2,
+    3,
+    4,
+    5,
+  ];
+  int _etoile = 5;
+  void nBetoile(int value) {
+    setState(() {
+      _etoile = value;
     });
   }
 
@@ -87,11 +103,12 @@ class _AjoutBienState extends State<AjoutBien> {
               child: Column(
                 children: <Widget>[
                   Text(
-                    "Ajouter les photos de l'hébergement",
+                    "Ajouter la photo de couverture de l'hébergement",
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 16,
                     ),
+                    textAlign: TextAlign.center,
                   ),
                   Padding(
                     padding: const EdgeInsets.all(10.0),
@@ -435,7 +452,47 @@ class _AjoutBienState extends State<AjoutBien> {
                   textInputAction: TextInputAction.next,
                 ),
               ),
-
+              Padding(
+                padding: const EdgeInsets.only(top: 8.0, left: 10),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Text("Classement"),
+                  ],
+                ),
+              ),
+              new Padding(
+                padding: const EdgeInsets.all(5),
+                child: Container(
+                  height: MediaQuery.of(context).size.height / 11,
+                  child: FormField(
+                    builder: (FormFieldState state) {
+                      return InputDecorator(
+                          decoration: InputDecoration(
+                            border: new OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(20),
+                            ),
+                          ),
+                          child: new DropdownButtonHideUnderline(
+                            child: DropdownButton(
+                              value: _etoile,
+                              items: etoile.map(
+                                (int value) {
+                                  return DropdownMenuItem(
+                                    value: value,
+                                    child: Text('${value}'),
+                                  );
+                                },
+                              ).toList(),
+                              onChanged: (int value) {
+                                nBetoile(value);
+                              },
+                            ),
+                          ));
+                    },
+                  ),
+                ),
+              ),
               uploadPhoto(),
               Padding(
                 padding: const EdgeInsets.only(
@@ -472,6 +529,7 @@ class _AjoutBienState extends State<AjoutBien> {
                           myForm['adresse'] = adresse;
                           myForm['ville'] = ville;
                           myForm["image"] = _image;
+                          myForm["etoile"] = _etoile;
 
                           myForm['photoCouverture'] = _image;
                           print(myForm.toString());

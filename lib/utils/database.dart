@@ -21,7 +21,7 @@ class DatabaseService {
           description: doc.data['Description'] ?? '',
           image: doc.data['Image'] ?? '',
           etoile: doc.data['etoile'] ?? 0,
-          prix: doc.data['prix'] ?? 0,
+          prix: doc.data['prix'] ?? 0.0,
           pictures: doc.data['pictures'] ?? [],
           ville: doc.data['ville'] ?? '',
           pays: doc.data['pays'] ?? '',
@@ -52,12 +52,12 @@ class DatabaseService {
       return [];
   }
 
-  Future<void> addHotel(ApartmentModel hotel) async {
-    await hotelCollection.add(hotel.toMap());
+  Future<void> addHotel(ApartmentModel hotel, String documentId) async {
+    await hotelCollection.document(documentId).setData(hotel.toMap());
   }
 
-  Future<void> addChambre(Chambre chambre) async {
-    await chambreCollection.add(chambre.toMap());
+  Future<void> addChambre(Chambre chambre, String documentId) async {
+    await chambreCollection.document(documentId).setData(chambre.toMap());
   }
 
   Future<List<ApartmentModel>> getHotelById(String id) async {
@@ -96,7 +96,6 @@ class DatabaseService {
     return snapshot.documents.map((doc) {
       Chambre(
         nomHotel: doc.data['nomHotel'] ?? '',
-        photo: doc.data['photo'] ?? '',
         prix: doc.data['prix'] ?? 0.0,
         type: doc.data['type'] ?? [],
         pictures: doc.data['pictures'] ?? [],
@@ -166,6 +165,10 @@ class DatabaseService {
     }).toList();
   }
 
+  Future<void> addEquipement(Equipement equipement) async {
+    await equipementCollection.add(equipement.toMap());
+  }
+
   Stream<List<Equipement>> get equipement {
     return equipementCollection.snapshots().map(equipementListFromSnapshot);
   }
@@ -212,5 +215,9 @@ class DatabaseService {
       print("empty");
       return [];
     }
+  }
+
+  Future<void> addEquipementChamber(EquipementChambre equipement) async {
+    await equipementchamberCollection.add(equipement.toMap());
   }
 }

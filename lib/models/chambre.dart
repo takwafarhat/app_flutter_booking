@@ -5,7 +5,6 @@ class Chambre {
   final String nomHotel;
   final double prix;
   final String type;
-  final String photo;
   final String idhotel;
   final String id;
   final List pictures;
@@ -18,7 +17,6 @@ class Chambre {
   Chambre({
     this.prix,
     this.nomHotel,
-    this.photo,
     this.type,
     this.idhotel,
     this.id,
@@ -34,7 +32,6 @@ class Chambre {
 
     return Chambre(
       nomHotel: map['nomHotel'],
-      photo: map['photo'],
       prix: (map['prix'] as num).toDouble(),
       type: map['type'],
       idhotel: map['idhotel'],
@@ -48,7 +45,6 @@ class Chambre {
 
   Map<String, dynamic> toMap() => {
         'nomHotel': nomHotel,
-        'photo': photo,
         'prix': prix,
         'type': pictures,
         'idhotel': idhotel,

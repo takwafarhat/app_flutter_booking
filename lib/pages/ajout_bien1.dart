@@ -24,6 +24,7 @@ class _AjoutBienState extends State<AjoutBien1> {
   TimeOfDay _heureOut = TimeOfDay.now();
   String hdescription = '';
   File _image;
+  String prixinitial = '';
   List<Asset> images = List<Asset>();
   _pickTime1() async {
     TimeOfDay t = await showTimePicker(context: context, initialTime: _heureIn);
@@ -81,6 +82,7 @@ class _AjoutBienState extends State<AjoutBien1> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
+                        prixInitial(),
                         buildPaddingHeure(),
                         const Divider(
                           height: 1,
@@ -128,6 +130,7 @@ class _AjoutBienState extends State<AjoutBien1> {
                                         equipmentFilterListData;
                                     myForm["les photos de l'hôtel"] = images;
 
+                                    myForm["prix"] = double.parse(prixinitial);
                                     print(myForm);
 
                                     equipmentFilterListData.forEach((element) {
@@ -551,6 +554,25 @@ class _AjoutBienState extends State<AjoutBien1> {
           onChanged: (val) => hdescription = val,
           textInputAction: TextInputAction.next,
           validator: (val) => val.isEmpty ? 'Entrer la description ' : null,
+        ),
+      ]),
+    );
+  }
+
+  Widget prixInitial() {
+    return Padding(
+      padding: const EdgeInsets.all(15.0),
+      child: Column(children: <Widget>[
+        TextFormField(
+          decoration: InputDecoration(
+            labelText: 'Prix ',
+            border: new OutlineInputBorder(
+              borderRadius: BorderRadius.circular(20),
+            ),
+          ),
+          onChanged: (val) => prixinitial = val,
+          textInputAction: TextInputAction.next,
+          validator: (val) => val.isEmpty ? 'Entrer le prix initiale ' : null,
         ),
       ]),
     );

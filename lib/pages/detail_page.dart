@@ -790,7 +790,7 @@ class _DetailPageState extends State<DetailPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(4)),
             image: DecorationImage(
-                image: NetworkImage(myChambers[index].photo),
+                image: NetworkImage(myChambers[index].pictures[0]),
                 fit: BoxFit.cover),
           ),
         ),

@@ -1,8 +1,12 @@
+import 'dart:math';
+
+import 'package:app_flat/pages/Equipement.dart';
+import 'package:app_flat/pages/EquipementChambre.dart';
 import 'package:app_flat/pages/filtre/popular_filter_list.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/hotel_app_theme.dart';
 import 'dart:async';
@@ -26,48 +30,15 @@ class ChamberAddBottomSheet extends StatefulWidget {
 }
 
 class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
-  List<Asset> images = List<Asset>();
   final _formKey = GlobalKey<FormState>();
 
-  Chambre mychamber;
   ApartmentModel myHotel;
+  List<PopularFilterListData> listEquipHeberg = [];
   List<Widget> list = [];
   String type = '';
-
-  String prix;
-  String descriptionCh = '';
-
-  File _image;
-
-  List<String> _types = [
-    "Chambre familiale",
-    "Chambre double",
-    "Chambre avec lit jumeaux",
-    "Chambre avec lit jumeaux, vue mer",
-    "Chambre double, vue mer",
-    "Chambre simple",
-    "suites"
-  ];
-  String _type = "Chambre double";
-
-  List<int> nbch = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
-  int _nbch = 1;
-
-  void typeBien(String value) {
-    setState(() {
-      _type = value;
-    });
-  }
-
-  void nbCham(int value) {
-    setState(() {
-      _nbch = value;
-    });
-  }
-
-  List<PopularFilterListData> equipmentFilterListData =
-      PopularFilterListData.equipementChamberList;
-  int x = 1;
+  List<int> mychambersListpositions = [0];
+  List<Chambre> myChambers = [];
+  int count = 1;
 
   Map<String, dynamic> myForm = {};
 
@@ -76,34 +47,33 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
     super.initState();
     myForm = widget.form;
 
-    print("form final " + myForm.toString());
+    listEquipHeberg = myForm["equipement"];
+
+    print("listEquipHeberg \t " + listEquipHeberg.toString());
+  }
+
+  delete() {
+    setState(() {
+      count--;
+    });
   }
 
   @override
   Widget build(BuildContext context) {
+    print('myChmbers length== \t' + myChambers.length.toString());
     list.clear();
-    for (var i = 0; i < x; i++) {
+    for (var i = 0; i < count; i++) {
       list.add(Column(
         children: <Widget>[
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Column(
               children: <Widget>[
-                AjoutChambre(context),
-                Padding(
-                  padding: const EdgeInsets.only(left: 200.0),
-                  child: IconButton(
-                    icon: Icon(
-                      Icons.delete,
-                      color: Colors.teal[200],
-                    ),
-                    onPressed: () async {
-                      setState(() {
-                        x--;
-                      });
-                    },
-                  ),
-                ),
+                AjoutChambre(
+                    deleteCallback: delete,
+                    saveCallback: (val) => setState(() {
+                          myChambers.add(val);
+                        })),
               ],
             ),
           ),
@@ -136,12 +106,8 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
             onPressed: () async {
               _formKey.currentState.save();
               if (_formKey.currentState.validate()) {
-                mychamber = Chambre(
-                    type: _type,
-                    nbChambredispo: _nbch,
-                    prix: double.parse(prix),
-                    description: descriptionCh,
-                    equip: equipmentFilterListData);
+                String documentId =
+                    DateTime.now().microsecondsSinceEpoch.toString();
                 myHotel = ApartmentModel(
                   nom: myForm["nom"],
                   typeHotel: myForm['type'],
@@ -150,17 +116,64 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
                   email: myForm['email'],
                   address: myForm['adresse'],
                   ville: myForm['ville'],
+                  etoile: myForm["etoile"],
                   image: null,
                   hentree: myForm["heureIn"].toString(),
                   hsortie: myForm["heureOut"].toString(),
                   description: myForm["description"],
                   pictures: null,
+                  prix: myForm["prix"],
                 );
-                await DatabaseService().addHotel(myHotel);
-                await DatabaseService().addChambre(mychamber);
 
-                myForm['Chambre'] = mychamber;
+                await DatabaseService().addHotel(myHotel, documentId);
+                myChambers.forEach((element) async {
+                  int index = myChambers.indexOf(element);
+                  Chambre myChamber = Chambre(
+                      description: element.description,
+                      idhotel: documentId,
+                      prix: element.prix,
+                      nbChambredispo: element.nbChambredispo,
+                      type: element.type,
+                      equip: element.equip);
+                  String chamberId =
+                      DateTime.now().microsecondsSinceEpoch.toString() +
+                          index.toString();
+                  await DatabaseService().addChambre(myChamber, chamberId);
+
+                  myChamber.equip.forEach((element) async {
+                    if (element.isSelected == true) {
+                      EquipementChambre equiCh = EquipementChambre(
+                          nom: element.titleTxt,
+                          idChamber: chamberId,
+                          photo: element.photo);
+
+                      await DatabaseService().addEquipementChamber(equiCh);
+                    }
+                  });
+                });
+
+                listEquipHeberg.forEach((element) async {
+                  if (element.isSelected == true) {
+                    Equipement equiheberg = Equipement(
+                        nom: element.titleTxt,
+                        idHotel: documentId,
+                        photo: element.photo);
+
+                    await DatabaseService().addEquipement(equiheberg);
+                  }
+                });
+
+                // equipmentFilterListData.forEach((element) {
+
+                //   if(element.isSelected == true){
+                //     EquipementChambre equiChamber= EquipementChambre(
+                //       idChamber:
+                //     )
+                //   }
+                // });
+
                 print(myForm);
+
                 // Navigator.of(context).push(
                 //     MaterialPageRoute<Null>(
                 //         builder: (BuildContext context) {
@@ -209,7 +222,7 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
                           child: Text('Ajouter un autre type de chambre'),
                           onTap: () {
                             setState(() {
-                              x++;
+                              count++;
                             });
                           },
                         ),
@@ -224,8 +237,62 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
       ),
     );
   }
+  // Future<void> camera() async {
+  //   var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
-  Widget AjoutChambre(BuildContext context) {
+  //   setState(() {
+  //     _image = image;
+  //     print('Image Path $_image');
+  //   });
+  // }
+
+}
+
+typedef void Callback(Chambre chambre);
+
+class AjoutChambre extends StatefulWidget {
+  final Callback saveCallback;
+  final Function() deleteCallback;
+  AjoutChambre({this.saveCallback, this.deleteCallback});
+  @override
+  _AjoutChambreState createState() => _AjoutChambreState();
+}
+
+class _AjoutChambreState extends State<AjoutChambre> {
+  List<Asset> images = List<Asset>();
+  File _image;
+  String prix;
+  String descriptionCh = '';
+  List<String> _types = [
+    "Chambre familiale",
+    "Chambre double",
+    "Chambre avec lit jumeaux",
+    "Chambre avec lit jumeaux, vue mer",
+    "Chambre double, vue mer",
+    "Chambre simple",
+    "suites"
+  ];
+  String _type = "Chambre familiale";
+
+  List<int> nbch = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10];
+  int _nbch = 1;
+  void typeBien(String value) {
+    setState(() {
+      _type = value;
+    });
+  }
+
+  bool onpressed = false;
+  void nbCham(int value) {
+    setState(() {
+      _nbch = value;
+    });
+  }
+
+  List<PopularFilterListData> equipmentFilterListData =
+      PopularFilterListData.equipementChamberList;
+  @override
+  Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
         new Padding(
@@ -489,6 +556,42 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
             ],
           ),
         ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            IconButton(
+              icon: Icon(
+                Icons.delete,
+                color: Colors.teal[200],
+              ),
+              onPressed: () {
+                widget.deleteCallback();
+              },
+            ),
+            IconButton(
+              icon: Icon(
+                Icons.save,
+                color: Colors.teal[200],
+              ),
+              onPressed: () {
+                widget.saveCallback(Chambre(
+                  equip: equipmentFilterListData,
+                  type: _type,
+                  nbChambredispo: _nbch,
+                  prix: double.parse(prix),
+                  description: descriptionCh,
+                ));
+                // if (onpressed == false) {
+
+                //   onpressed = true;
+                //   print("done");
+                // } else {
+                //   print("deja selectionné ");
+                // }
+              },
+            ),
+          ],
+        ),
       ],
     );
   }
@@ -522,15 +625,6 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
       // print('Image Path $_image');
     });
   }
-
-  // Future<void> camera() async {
-  //   var image = await ImagePicker.pickImage(source: ImageSource.camera);
-
-  //   setState(() {
-  //     _image = image;
-  //     print('Image Path $_image');
-  //   });
-  // }
 
   Widget popularFilter() {
     return Column(

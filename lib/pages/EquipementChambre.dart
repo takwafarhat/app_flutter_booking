@@ -18,4 +18,10 @@ class EquipementChambre {
       photo: map['photo'],
     );
   }
+
+  Map<String, dynamic> toMap() => {
+        'idChamber': idChamber,
+        'nom': nom,
+        'photo': photo,
+      };
 }
