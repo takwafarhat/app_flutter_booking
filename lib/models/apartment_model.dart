@@ -4,7 +4,6 @@ class ApartmentModel {
   final String description;
   final String nom;
   final String image;
-
   final int etoile;
   final double prix;
   final String typeHotel;
@@ -54,12 +53,12 @@ class ApartmentModel {
         image: map['Image'],
         etoile: map['etoile'],
         prix: (map['prix'] == null ? 0.0 : map['prix'] as num).toDouble(),
-        pictures: map['pictures'],
+        pictures: map['pictures'] == null ? [] : map['pictures'],
         ville: map['ville'],
         pays: map['pays'],
         email: map['Email'],
-        user: map['User'],
-        imageProp: map['imageProp'],
+        user: map['User'] == null ? '' : map['User'],
+        imageProp: map['imageProp'] == null ? '' : map['imageProp'],
         telephone: map['Telephone'],
         hentree: map['hentree'],
         hsortie: map['hsortie'],

@@ -194,7 +194,7 @@ class _DetailPageState extends State<DetailPage> {
                                   color: Colors.black,
                                 ),
                                 Text(
-                                  "${widget.myHotel.prix.toInt()}",
+                                  "${widget.myHotel.prix}",
                                   style: TextStyle(
                                     fontWeight: FontWeight.bold,
                                     color: Colors.black,
@@ -280,7 +280,9 @@ class _DetailPageState extends State<DetailPage> {
       itemBuilder: (context, index) {
         return Stack(children: <Widget>[
           Image.network(
-            widget.myHotel.pictures[index],
+            widget.myHotel.pictures[index] == null
+                ? []
+                : widget.myHotel.pictures[index],
             fit: BoxFit.fill,
             height: MediaQuery.of(context).size.height * .3,
             width: MediaQuery.of(context).size.width,
@@ -384,7 +386,7 @@ class _DetailPageState extends State<DetailPage> {
               color: Colors.white,
             ),
             Text(
-              "${widget.myHotel.prix.toString()}",
+              "${widget.myHotel.prix}",
               style: TextStyle(
                 color: Colors.white,
               ),
@@ -530,7 +532,10 @@ class _DetailPageState extends State<DetailPage> {
                     ),
                     padding: EdgeInsets.all(5),
                     child: CircleAvatar(
-                      backgroundImage: NetworkImage(widget.myHotel.imageProp),
+                      backgroundImage: NetworkImage(widget.myHotel.imageProp ==
+                              null
+                          ? 'https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-4.jpg'
+                          : widget.myHotel.imageProp),
                       maxRadius: 40,
                     ),
                   ),
@@ -790,7 +795,9 @@ class _DetailPageState extends State<DetailPage> {
           decoration: BoxDecoration(
             borderRadius: BorderRadius.all(Radius.circular(4)),
             image: DecorationImage(
-                image: NetworkImage(myChambers[index].pictures[0]),
+                image: NetworkImage(myChambers[index].pictures[0] == null
+                    ? 'https://icon-library.com/images/no-photo-available-icon/no-photo-available-icon-4.jpg'
+                    : myChambers[index].pictures[0]),
                 fit: BoxFit.cover),
           ),
         ),

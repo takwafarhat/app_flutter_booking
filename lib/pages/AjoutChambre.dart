@@ -1,4 +1,4 @@
-import 'dart:math';
+import 'package:app_flat/pages/home_page.dart';
 
 import 'package:app_flat/pages/Equipement.dart';
 import 'package:app_flat/pages/EquipementChambre.dart';
@@ -6,13 +6,15 @@ import 'package:app_flat/pages/filtre/popular_filter_list.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:app_flat/models/chambre.dart';
 import 'package:app_flat/pages/chamber/hotel_app_theme.dart';
 import 'dart:async';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:app_flat/models/apartment_model.dart';
 import 'package:app_flat/utils/database.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+
+import 'package:path/path.dart' as Path;
 
 class ChamberAddBottomSheet extends StatefulWidget {
   final Function(int, int, int) onApplyClick;
@@ -31,15 +33,17 @@ class ChamberAddBottomSheet extends StatefulWidget {
 
 class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
   final _formKey = GlobalKey<FormState>();
-
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
   ApartmentModel myHotel;
   List<PopularFilterListData> listEquipHeberg = [];
   List<Widget> list = [];
+
   String type = '';
   List<int> mychambersListpositions = [0];
   List<Chambre> myChambers = [];
   int count = 1;
-
+  File _imageCouv;
+  List<File> hotelPictures = [];
   Map<String, dynamic> myForm = {};
 
   @override
@@ -48,8 +52,10 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
     myForm = widget.form;
 
     listEquipHeberg = myForm["equipement"];
-
-    print("listEquipHeberg \t " + listEquipHeberg.toString());
+    _imageCouv = myForm['photoCouverture'];
+    hotelPictures = myForm['hotelPictures'];
+    print('hotelPictures files == \t' + hotelPictures.toString());
+    print("photoCouverture \t " + _imageCouv.toString());
   }
 
   delete() {
@@ -86,6 +92,8 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
     }
 
     return Scaffold(
+      key: _scaffoldKey,
+
       //backgroundColor: Colors.transparent,
       appBar: AppBar(
         title: Text('Détails de la chambre'),
@@ -98,92 +106,109 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
         ),
         actions: <Widget>[
           IconButton(
-            icon: Icon(
-              Icons.save,
-              color: Colors.white,
-              size: 40,
-            ),
-            onPressed: () async {
-              _formKey.currentState.save();
-              if (_formKey.currentState.validate()) {
-                String documentId =
-                    DateTime.now().microsecondsSinceEpoch.toString();
-                myHotel = ApartmentModel(
-                  nom: myForm["nom"],
-                  typeHotel: myForm['type'],
-                  pays: myForm["pay"],
-                  telephone: myForm['telephone'],
-                  email: myForm['email'],
-                  address: myForm['adresse'],
-                  ville: myForm['ville'],
-                  etoile: myForm["etoile"],
-                  image: null,
-                  hentree: myForm["heureIn"].toString(),
-                  hsortie: myForm["heureOut"].toString(),
-                  description: myForm["description"],
-                  pictures: null,
-                  prix: myForm["prix"],
-                );
+              icon: Icon(
+                Icons.save,
+                color: Colors.white,
+                size: 40,
+              ),
+              onPressed: () async {
+                if (list.length == myChambers.length) {
+                  _formKey.currentState.save();
 
-                await DatabaseService().addHotel(myHotel, documentId);
-                myChambers.forEach((element) async {
-                  int index = myChambers.indexOf(element);
-                  Chambre myChamber = Chambre(
-                      description: element.description,
-                      idhotel: documentId,
-                      prix: element.prix,
-                      nbChambredispo: element.nbChambredispo,
-                      type: element.type,
-                      equip: element.equip);
-                  String chamberId =
-                      DateTime.now().microsecondsSinceEpoch.toString() +
-                          index.toString();
-                  await DatabaseService().addChambre(myChamber, chamberId);
+                  if (_formKey.currentState.validate()) {
+                    String documentId =
+                        DateTime.now().microsecondsSinceEpoch.toString();
+                    String hotelPic = '';
+                    hotelPic = await uploadImage(_imageCouv);
 
-                  myChamber.equip.forEach((element) async {
-                    if (element.isSelected == true) {
-                      EquipementChambre equiCh = EquipementChambre(
-                          nom: element.titleTxt,
-                          idChamber: chamberId,
-                          photo: element.photo);
+                    List<String> hotelPicss = [];
 
-                      await DatabaseService().addEquipementChamber(equiCh);
-                    }
-                  });
-                });
+                    hotelPictures.forEach((element) async {
+                      String pic = await uploadImage(element);
+                      print('PIIIIIIIIIIIIIIIC ====    ' + pic);
+                      setState(() {
+                        hotelPicss.add(pic);
+                      });
+                      print(
+                          'hotelPics ====    ' + hotelPicss.length.toString());
+                    });
+                    Timer(Duration(seconds: 3), () async {
+                      myHotel = ApartmentModel(
+                        nom: myForm["nom"],
+                        typeHotel: myForm['type'],
+                        pays: myForm["pay"],
+                        telephone: myForm['telephone'],
+                        email: myForm['email'],
+                        address: myForm['adresse'],
+                        ville: myForm['ville'],
+                        etoile: myForm["etoile"],
+                        image: hotelPic,
+                        hentree: myForm["heureIn"].toString(),
+                        hsortie: myForm["heureOut"].toString(),
+                        description: myForm["description"],
+                        pictures: hotelPicss,
+                        prix: myForm["prix"],
+                      );
 
-                listEquipHeberg.forEach((element) async {
-                  if (element.isSelected == true) {
-                    Equipement equiheberg = Equipement(
-                        nom: element.titleTxt,
-                        idHotel: documentId,
-                        photo: element.photo);
+                      await DatabaseService().addHotel(myHotel, documentId);
+                      myChambers.forEach((element) async {
+                        int index = myChambers.indexOf(element);
 
-                    await DatabaseService().addEquipement(equiheberg);
+                        Chambre myChamber = Chambre(
+                            description: element.description,
+                            idhotel: documentId,
+                            prix: element.prix,
+                            nbChambredispo: element.nbChambredispo,
+                            type: element.type,
+                            equip: element.equip);
+
+                        String chamberId =
+                            DateTime.now().microsecondsSinceEpoch.toString() +
+                                index.toString();
+
+                        await DatabaseService()
+                            .addChambre(myChamber, chamberId);
+
+                        myChamber.equip.forEach((element) async {
+                          if (element.isSelected == true) {
+                            EquipementChambre equiCh = EquipementChambre(
+                                nom: element.titleTxt,
+                                idChamber: chamberId,
+                                photo: element.photo);
+
+                            await DatabaseService()
+                                .addEquipementChamber(equiCh);
+                          }
+                        });
+                      });
+
+                      listEquipHeberg.forEach((element) async {
+                        if (element.isSelected == true) {
+                          Equipement equiheberg = Equipement(
+                              nom: element.titleTxt,
+                              idHotel: documentId,
+                              photo: element.photo);
+
+                          await DatabaseService()
+                              .addEquipement(equiheberg)
+                              .then((value) => {
+                                    Navigator.of(context).pushReplacement(
+                                      MaterialPageRoute(
+                                        builder: (context) => HomePage(),
+                                      ),
+                                    )
+                                  });
+                        }
+                      });
+
+                      print(myForm);
+                    });
                   }
-                });
-
-                // equipmentFilterListData.forEach((element) {
-
-                //   if(element.isSelected == true){
-                //     EquipementChambre equiChamber= EquipementChambre(
-                //       idChamber:
-                //     )
-                //   }
-                // });
-
-                print(myForm);
-
-                // Navigator.of(context).push(
-                //     MaterialPageRoute<Null>(
-                //         builder: (BuildContext context) {
-                //   return new ChamberAddBottomSheet(
-                //     form: myForm,
-                //   );
-                // }));
-              }
-            },
-          ),
+                } else {
+                  _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text('Yay! A SnackBar!')));
+                }
+              }),
         ],
       ),
       body: Padding(
@@ -237,6 +262,22 @@ class _ChamberAddBottomSheetState extends State<ChamberAddBottomSheet> {
       ),
     );
   }
+
+  Future<String> uploadImage(File file) async {
+    StorageReference storageReference = FirebaseStorage.instance
+        .ref()
+        .child('hotels/${Path.basename(file.path)}}');
+
+    StorageUploadTask uploadTask = storageReference.putFile(file);
+    await uploadTask.onComplete;
+
+    print('File Uploaded');
+    String myImageUrl = '';
+    await storageReference.getDownloadURL().then((fileURL) {
+      myImageUrl = fileURL;
+    });
+    return myImageUrl;
+  }
   // Future<void> camera() async {
   //   var image = await ImagePicker.pickImage(source: ImageSource.camera);
 
@@ -261,6 +302,7 @@ class AjoutChambre extends StatefulWidget {
 class _AjoutChambreState extends State<AjoutChambre> {
   List<Asset> images = List<Asset>();
   File _image;
+
   String prix;
   String descriptionCh = '';
   List<String> _types = [
@@ -329,6 +371,15 @@ class _AjoutChambreState extends State<AjoutChambre> {
                     ));
               },
             ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.only(top: 8.0, left: 10),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: <Widget>[
+              Text("Nombre de chambre disponible"),
+            ],
           ),
         ),
         new Padding(
@@ -453,82 +504,6 @@ class _AjoutChambreState extends State<AjoutChambre> {
                                     ),
                                     onPressed: () {
                                       gallerie();
-                                      // showDialog(
-                                      //     context: context,
-                                      //     builder: (BuildContext) {
-                                      //       return AlertDialog(
-                                      //         shape: RoundedRectangleBorder(
-                                      //             borderRadius:
-                                      //                 BorderRadius.all(
-                                      //                     Radius.circular(20))),
-                                      //         title: Text(
-                                      //           "Telecharget l'image ",
-                                      //           style: Theme.of(context)
-                                      //               .textTheme
-                                      //               .title,
-                                      //           textAlign: TextAlign.center,
-                                      //         ),
-                                      //         content: Container(
-                                      //           width: 100.0,
-                                      //           height: 100.0,
-                                      //           decoration: new BoxDecoration(
-                                      //             shape: BoxShape.rectangle,
-                                      //             color: const Color(0xFFFFFF),
-                                      //             borderRadius:
-                                      //                 new BorderRadius.all(
-                                      //                     new Radius.circular(
-                                      //                         32.0)),
-                                      //           ),
-                                      //           child: SingleChildScrollView(
-                                      //             child: ListBody(
-                                      //               children: <Widget>[
-                                      //                 Padding(
-                                      //                   padding:
-                                      //                       const EdgeInsets
-                                      //                           .all(8.0),
-                                      //                   child: RaisedButton(
-                                      //                     child:
-                                      //                         Text("Galerie"),
-                                      //                     color:
-                                      //                         Colors.teal[200],
-                                      //                     colorBrightness:
-                                      //                         Brightness.dark,
-                                      //                     onPressed: () {
-                                      //                       gallerie();
-                                      //                     },
-                                      //                     shape: RoundedRectangleBorder(
-                                      //                         borderRadius:
-                                      //                             BorderRadius
-                                      //                                 .circular(
-                                      //                                     20.0)),
-                                      //                   ),
-                                      //                 ),
-                                      //                 // Padding(
-                                      //                 //   padding:
-                                      //                 //       const EdgeInsets
-                                      //                 //           .all(8.0),
-                                      //                 //   child: RaisedButton(
-                                      //                 //     child: Text("Camera"),
-                                      //                 //     color:
-                                      //                 //         Colors.teal[200],
-                                      //                 //     colorBrightness:
-                                      //                 //         Brightness.dark,
-                                      //                 //     onPressed: () {
-                                      //                 //       camera();
-                                      //                 //     },
-                                      //                 //     shape: RoundedRectangleBorder(
-                                      //                 //         borderRadius:
-                                      //                 //             BorderRadius
-                                      //                 //                 .circular(
-                                      //                 //                     20.0)),
-                                      //                 //   ),
-                                      //                 // )
-                                      //               ],
-                                      //             ),
-                                      //           ),
-                                      //         ),
-                                      //       );
-                                      //     });
                                     },
                                   ),
                                 ],
@@ -570,24 +545,23 @@ class _AjoutChambreState extends State<AjoutChambre> {
             ),
             IconButton(
               icon: Icon(
-                Icons.save,
+                onpressed == false ? Icons.save : Icons.check,
                 color: Colors.teal[200],
               ),
               onPressed: () {
-                widget.saveCallback(Chambre(
-                  equip: equipmentFilterListData,
-                  type: _type,
-                  nbChambredispo: _nbch,
-                  prix: double.parse(prix),
-                  description: descriptionCh,
-                ));
-                // if (onpressed == false) {
-
-                //   onpressed = true;
-                //   print("done");
-                // } else {
-                //   print("deja selectionné ");
-                // }
+                if (onpressed == false) {
+                  widget.saveCallback(Chambre(
+                    equip: equipmentFilterListData,
+                    type: _type,
+                    nbChambredispo: _nbch,
+                    prix: double.parse(prix),
+                    description: descriptionCh,
+                  ));
+                  onpressed = true;
+                  print("done");
+                } else {
+                  print("deja selectionné ");
+                }
               },
             ),
           ],

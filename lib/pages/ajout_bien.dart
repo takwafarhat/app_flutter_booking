@@ -6,7 +6,9 @@ import 'dart:io';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:permission_handler/permission_handler.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'dart:io';
+import 'package:path/path.dart' as Path;
 
 class AjoutBien extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class _AjoutBienState extends State<AjoutBien> {
 
   final myController = TextEditingController();
   File _image;
+
   List<String> _types = [
     "Appartement",
     "Hotel",
@@ -83,6 +86,23 @@ class _AjoutBienState extends State<AjoutBien> {
     myController.dispose();
     super.dispose();
   }
+
+  //  uploadFile() async {
+  //   StorageReference storageReference = FirebaseStorage.instance
+  //       .ref()
+  //       .child('hotels/${Path.basename(_image.path)}}');
+
+  //   StorageUploadTask uploadTask = storageReference.putFile(_image);
+  //   await uploadTask.onComplete;
+
+  //   print('File Uploaded');
+
+  //   storageReference.getDownloadURL().then((fileURL) {
+  //     setState(() {
+  //       _uploadedFileURL = fileURL;
+  //     });
+  //   });
+  // }
 
   Widget uploadPhoto() {
     return new Padding(
@@ -211,18 +231,6 @@ class _AjoutBienState extends State<AjoutBien> {
                             ),
                           ],
                         ),
-                        // Padding(
-                        //   padding: const EdgeInsets.all(8.0),
-                        //   child: Container(
-                        //     height: 200,
-                        //     width: 400,
-                        //     child: Column(
-                        //       children: <Widget>[
-                        //         Expanded(),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // )
                       ],
                     ),
                   ),
@@ -517,10 +525,9 @@ class _AjoutBienState extends State<AjoutBien> {
                           const BorderRadius.all(Radius.circular(24.0)),
                       highlightColor: Colors.transparent,
                       onTap: () {
+                        // uploadFile();
                         _formKey.currentState.save();
                         if (_formKey.currentState.validate()) {
-                          print("m phone" + telephone);
-                          print("la photo" + _image.toString());
                           myForm['nom'] = nomhebergement;
                           myForm['type'] = _type;
                           myForm["pay"] = myController.text;
@@ -528,14 +535,13 @@ class _AjoutBienState extends State<AjoutBien> {
                           myForm['email'] = email;
                           myForm['adresse'] = adresse;
                           myForm['ville'] = ville;
-                          myForm["image"] = _image;
                           myForm["etoile"] = _etoile;
-
                           myForm['photoCouverture'] = _image;
+
                           print(myForm.toString());
                           Navigator.of(context).push(MaterialPageRoute<Null>(
                               builder: (BuildContext context) {
-                            return new AjoutBien1(
+                            return AjoutBien1(
                               form: myForm,
                             );
                           }));
@@ -560,16 +566,6 @@ class _AjoutBienState extends State<AjoutBien> {
                   ),
                 ),
               ),
-              // RaisedButton(
-              //   child: Text("Suivant"),
-              //   color: Colors.teal[100],
-              //   onPressed: () {
-              //     Navigator.of(context).push(
-              //         MaterialPageRoute<Null>(builder: (BuildContext context) {
-              //       return new AjoutBien1();
-              //     }));
-              //   },
-              // ),
             ],
           ),
         ),

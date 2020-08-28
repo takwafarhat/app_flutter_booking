@@ -2,9 +2,10 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:app_flat/pages/filtre/popular_filter_list.dart';
+import 'package:flutter/services.dart';
 
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
-import 'package:image_picker/image_picker.dart';
+import 'package:path_provider/path_provider.dart';
 import 'chamber/hotel_app_theme.dart';
 import 'package:app_flat/pages/AjoutChambre.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
@@ -26,6 +27,8 @@ class _AjoutBienState extends State<AjoutBien1> {
   File _image;
   String prixinitial = '';
   List<Asset> images = List<Asset>();
+  List<File> myFilesList = [];
+
   _pickTime1() async {
     TimeOfDay t = await showTimePicker(context: context, initialTime: _heureIn);
     if (t != null)
@@ -128,7 +131,7 @@ class _AjoutBienState extends State<AjoutBien1> {
                                     myForm["description"] = hdescription;
                                     myForm["equipement"] =
                                         equipmentFilterListData;
-                                    myForm["les photos de l'hôtel"] = images;
+                                    myForm['hotelPictures'] = myFilesList;
 
                                     myForm["prix"] = double.parse(prixinitial);
                                     print(myForm);
@@ -136,8 +139,6 @@ class _AjoutBienState extends State<AjoutBien1> {
                                     equipmentFilterListData.forEach((element) {
                                       print(element.isSelected);
                                     });
-
-                                    // print(myForm.toString());
 
                                     Navigator.of(context).push(
                                         MaterialPageRoute<Null>(
@@ -404,82 +405,6 @@ class _AjoutBienState extends State<AjoutBien1> {
                                 ),
                                 onPressed: () {
                                   gallerie();
-                                  // showDialog(
-                                  //     context: context,
-                                  //     builder: (BuildContext) {
-                                  //       return AlertDialog(
-                                  //         shape: RoundedRectangleBorder(
-                                  //             borderRadius:
-                                  //                 BorderRadius.all(
-                                  //                     Radius.circular(20))),
-                                  //         title: Text(
-                                  //           "Telecharget l'image ",
-                                  //           style: Theme.of(context)
-                                  //               .textTheme
-                                  //               .title,
-                                  //           textAlign: TextAlign.center,
-                                  //         ),
-                                  //         content: Container(
-                                  //           width: 100.0,
-                                  //           height: 100.0,
-                                  //           decoration: new BoxDecoration(
-                                  //             shape: BoxShape.rectangle,
-                                  //             color: const Color(0xFFFFFF),
-                                  //             borderRadius:
-                                  //                 new BorderRadius.all(
-                                  //                     new Radius.circular(
-                                  //                         32.0)),
-                                  //           ),
-                                  //           child: SingleChildScrollView(
-                                  //             child: ListBody(
-                                  //               children: <Widget>[
-                                  //                 Padding(
-                                  //                   padding:
-                                  //                       const EdgeInsets
-                                  //                           .all(8.0),
-                                  //                   child: RaisedButton(
-                                  //                     child:
-                                  //                         Text("Galerie"),
-                                  //                     color:
-                                  //                         Colors.teal[200],
-                                  //                     colorBrightness:
-                                  //                         Brightness.dark,
-                                  //                     onPressed: () {
-                                  //                       gallerie();
-                                  //                     },
-                                  //                     shape: RoundedRectangleBorder(
-                                  //                         borderRadius:
-                                  //                             BorderRadius
-                                  //                                 .circular(
-                                  //                                     20.0)),
-                                  //                   ),
-                                  //                 ),
-                                  //                 // Padding(
-                                  //                 //   padding:
-                                  //                 //       const EdgeInsets
-                                  //                 //           .all(8.0),
-                                  //                 //   child: RaisedButton(
-                                  //                 //     child: Text("Camera"),
-                                  //                 //     color:
-                                  //                 //         Colors.teal[200],
-                                  //                 //     colorBrightness:
-                                  //                 //         Brightness.dark,
-                                  //                 //     onPressed: () {
-                                  //                 //       camera();
-                                  //                 //     },
-                                  //                 //     shape: RoundedRectangleBorder(
-                                  //                 //         borderRadius:
-                                  //                 //             BorderRadius
-                                  //                 //                 .circular(
-                                  //                 //                     20.0)),
-                                  //                 //   ),
-                                  //                 // )
-                                  //               ],
-                                  //             ),
-                                  //           ),
-                                  //         ),
-                                  //       );
-                                  //     });
                                 },
                               ),
                             ],
@@ -527,13 +452,31 @@ class _AjoutBienState extends State<AjoutBien1> {
     );
   }
 
-  Future<void> gallerie() async {
-    List<Asset> image = List<Asset>();
-    image = await MultiImagePicker.pickImages(
-        maxImages: 10, enableCamera: true, selectedAssets: images);
+  Future<File> getImageFileFromAssets(Asset asset) async {
+    final byteData = await asset.getByteData();
 
+    final tempFile =
+        File("${(await getTemporaryDirectory()).path}/${asset.name}");
+    final file = await tempFile.writeAsBytes(
+      byteData.buffer
+          .asUint8List(byteData.offsetInBytes, byteData.lengthInBytes),
+    );
+
+    return file;
+  }
+
+  Future<void> gallerie() async {
+    List<Asset> myImages = List<Asset>();
+    myImages = await MultiImagePicker.pickImages(
+        maxImages: 10, enableCamera: true, selectedAssets: images);
+    myImages.forEach((element) async {
+      File f;
+      f = await getImageFileFromAssets(element);
+      print('asset to string' + element.toString());
+      myFilesList.add(f);
+    });
     setState(() {
-      images = image;
+      images = myImages;
 
       // print('Image Path $_image');
     });
@@ -573,6 +516,7 @@ class _AjoutBienState extends State<AjoutBien1> {
           onChanged: (val) => prixinitial = val,
           textInputAction: TextInputAction.next,
           validator: (val) => val.isEmpty ? 'Entrer le prix initiale ' : null,
+          keyboardType: TextInputType.phone,
         ),
       ]),
     );

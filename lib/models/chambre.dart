@@ -33,11 +33,11 @@ class Chambre {
     return Chambre(
       nomHotel: map['nomHotel'],
       prix: (map['prix'] as num).toDouble(),
-      type: map['type'],
+      type: map['type'] == null ? "" : map['type'],
       idhotel: map['idhotel'],
-      pictures: map['pictures'],
-      description: map['description'],
-      nbChambredispo: map['nbChambredispo'],
+      pictures: map['pictures'] == null ? [] : map['pictures'],
+      description: map['description'] ? "" : map['description'],
+      nbChambredispo: map['nbChambredispo'] == null ? 1 : map['nbChambredispo'],
       id: documentId,
       ratingCount: 5,
     );
